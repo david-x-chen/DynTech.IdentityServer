@@ -1,0 +1,11 @@
+{
+    "web": {
+        "client_id": "556513080901-g5rort44n0j13dchfacgsjlfionthbv9.apps.googleusercontent.com",
+        "project_id": "msa-profile",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://accounts.google.com/o/oauth2/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "GEENFkKriQ1UBu_gyUK0Db7J",
+        "redirect_uris": ["https://profile.magicsoft-asia.com/signin-google"]
+    }
+}
