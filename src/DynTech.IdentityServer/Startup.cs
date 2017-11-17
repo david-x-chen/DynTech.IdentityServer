@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,12 +8,12 @@ using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using Vanda.IdentityServer.Models;
 using Vanda.IdentityServer.Services;
-using IdentityServer4.EntityFramework.DbContexts;
 using System.Linq;
+using IdentityServer4;
 using IdentityServer4.EntityFramework.Mappers;
-using IdentityServer4.Validation;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Options;
 using Vanda.IdentityServer.Configuration;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Vanda.IdentityServer
@@ -36,12 +35,6 @@ namespace Vanda.IdentityServer
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets();
-            }
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
@@ -66,31 +59,36 @@ namespace Vanda.IdentityServer
             var connectionStr = Configuration.GetConnectionString("SQLConnection");
             var migrationAssmName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll",
-                    builder => builder.AllowAnyOrigin()
-                                      .AllowCredentials()
-                                      .AllowAnyMethod()
-                                      .AllowAnyHeader());
-            });
-
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionStr));
 
             // Identity Server 4
             services.AddIdentityServer()
-                .AddTemporarySigningCredential()
-                .AddSecretParser<ClientAssertionSecretParser>()
-                .AddSecretValidator<PrivateKeyJwtSecretValidator>()
-                .AddOperationalStore(builder => builder.UseSqlServer(connectionStr, options => options.MigrationsAssembly(migrationAssmName)))
-                .AddConfigurationStore(builder => builder.UseSqlServer(connectionStr, options => options.MigrationsAssembly(migrationAssmName)))
+                .AddSigningCredential(IdentityServerBuilderExtensionsCrypto.CreateRsaSecurityKey())
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(connectionStr, sql => sql.MigrationsAssembly(migrationAssmName));
+                })
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(connectionStr, sql => sql.MigrationsAssembly(migrationAssmName));
+                })
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<UserClaimsProfileService>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            var authSection = Configuration.GetSection("Authentication");
+            services.AddAuthentication()
+                .AddGoogle("Google", options =>
+                {
+                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+
+                    options.ClientId = authSection.GetSection("Google").GetValue<string>("clientId");
+                    options.ClientSecret = authSection.GetSection("Google").GetValue<string>("clientSecret");
+                });
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -98,6 +96,15 @@ namespace Vanda.IdentityServer
 
             services.AddMvc(options => {
                 options.Filters.Add(new RequireHttpsAttribute ());
+            });
+
+            // add CORS policy for non-IdentityServer endpoints
+            services.AddCors(options =>
+            {
+                options.AddPolicy("api", policy =>
+                {
+                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
             });
         }
 
@@ -114,8 +121,6 @@ namespace Vanda.IdentityServer
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.UseCors("AllowAll");
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -130,30 +135,11 @@ namespace Vanda.IdentityServer
             InitializeAspNetIdentityDatabase(app);
             InitializeIdentityServerDatabase(app);
 
+            app.UseCors("api");
+
             app.UseStaticFiles();
-
-            app.UseIdentity();
-
             app.UseIdentityServer();
-            app.UseIdentityServerEfTokenCleanup(applicationLifetime);
-
-            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
-            var authSection = Configuration.GetSection("Authentication");
-            var externalCookieScheme = app.ApplicationServices.GetRequiredService<IOptions<IdentityOptions>>().Value.Cookies.ExternalCookieAuthenticationScheme;
-            app.UseGoogleAuthentication(new GoogleOptions
-            {
-                AuthenticationScheme = "Google",
-                SignInScheme = externalCookieScheme,
-                ClientId = authSection.GetSection("Google").GetValue<string>("clientId"),
-                ClientSecret = authSection.GetSection("Google").GetValue<string>("clientSecret")
-            });
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvcWithDefaultRoute();
         }
 
         private void InitializeAspNetIdentityDatabase(IApplicationBuilder app)
