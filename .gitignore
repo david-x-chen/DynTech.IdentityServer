@@ -192,3 +192,4 @@ ModelManifest.xml
 *.lock.json
 *.template.json
 .vs/
+.vscode/

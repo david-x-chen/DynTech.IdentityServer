@@ -9,7 +9,6 @@
     <PackageId>DynTech.IdentityServer</PackageId>
     <UserSecretsId>aspnet-DynTech.IdentityServer-4b905751-5df1-40e3-a0f6-f1eb11be9fe0</UserSecretsId>
     <RuntimeFrameworkVersion>2.0.3</RuntimeFrameworkVersion>
-    <PackageTargetFallback>$(PackageTargetFallback);dotnet5.6;portable-net45+win8</PackageTargetFallback>
   </PropertyGroup>
 
   <ItemGroup>
