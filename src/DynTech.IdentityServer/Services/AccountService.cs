@@ -5,11 +5,11 @@ using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Threading.Tasks;
-using Vanda.IdentityServer.Models.AccountViewModels;
-using Vanda.IdentityServer.Models.Account;
+using DynTech.IdentityServer.Models.AccountViewModels;
+using DynTech.IdentityServer.Models.Account;
 using IdentityServer4;
 
-namespace Vanda.IdentityServer.Services
+namespace DynTech.IdentityServer.Services
 {
     public class AccountService
     {

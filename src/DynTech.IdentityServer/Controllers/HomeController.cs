@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Vanda.IdentityServer.Models;
+using DynTech.IdentityServer.Models;
 
-namespace Vanda.IdentityServer.Controllers
+namespace DynTech.IdentityServer.Controllers
 {
     /// <summary>
     /// 

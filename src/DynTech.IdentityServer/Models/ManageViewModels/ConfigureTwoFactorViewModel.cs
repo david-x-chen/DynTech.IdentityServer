@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Vanda.IdentityServer.Models.ManageViewModels
+namespace DynTech.IdentityServer.Models.ManageViewModels
 {
     public class ConfigureTwoFactorViewModel
     {

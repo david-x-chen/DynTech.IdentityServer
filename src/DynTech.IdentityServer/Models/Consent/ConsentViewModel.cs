@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Vanda.IdentityServer.Models.Consent
+namespace DynTech.IdentityServer.Models.Consent
 {
     public class ConsentViewModel : ConsentInputModel
     {

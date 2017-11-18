@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Vanda.IdentityServer.Migrations
+namespace DynTech.IdentityServer.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {

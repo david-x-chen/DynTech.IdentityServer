@@ -6,17 +6,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
-using Vanda.IdentityServer.Models;
-using Vanda.IdentityServer.Services;
+using DynTech.IdentityServer.Models;
+using DynTech.IdentityServer.Services;
 using System.Linq;
 using IdentityServer4;
 using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Options;
-using Vanda.IdentityServer.Configuration;
+using DynTech.IdentityServer.Configuration;
 using Microsoft.AspNetCore.Mvc;
+using DynTech.IdentityServer.Data.Seeding;
+using IdentityServer4.MongoDB.Interfaces;
 
-namespace Vanda.IdentityServer
+namespace DynTech.IdentityServer
 {
     /// <summary>
     /// 
@@ -56,46 +58,30 @@ namespace Vanda.IdentityServer
         {
             services.AddLogging();
 
-            var connectionStr = Configuration.GetConnectionString("SQLConnection");
-            var migrationAssmName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var defaultDb = Configuration.GetValue<string>("DefaultDb").ToUpper();
 
-            // Add framework services.
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionStr));
+            switch(defaultDb)
+            {
+                case "MSSQL":
+                default:
+                    services.AddIdentityServerWithMSSQL(Configuration);
+                    break;
+                case "MONGODB":
+                    services.AddIdentityServerWithMongoDB(Configuration);
+                    break;
+                case "POSTSQL":
+                    services.AddIdentityServerWithPostgreSQL(Configuration);
+                    break;
+            }
 
-            // Identity Server 4
-            services.AddIdentityServer()
-                .AddSigningCredential(IdentityServerBuilderExtensionsCrypto.CreateRsaSecurityKey())
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = builder => builder.UseSqlServer(connectionStr, sql => sql.MigrationsAssembly(migrationAssmName));
-                })
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = builder => builder.UseSqlServer(connectionStr, sql => sql.MigrationsAssembly(migrationAssmName));
-                })
-                .AddAspNetIdentity<ApplicationUser>()
-                .AddProfileService<UserClaimsProfileService>();
-
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            var authSection = Configuration.GetSection("Authentication");
-            services.AddAuthentication()
-                .AddGoogle("Google", options =>
-                {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-
-                    options.ClientId = authSection.GetSection("Google").GetValue<string>("clientId");
-                    options.ClientSecret = authSection.GetSection("Google").GetValue<string>("clientSecret");
-                });
+            services.AddExternalIdentityProviders(Configuration);
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
             services.AddMvc(options => {
-                options.Filters.Add(new RequireHttpsAttribute ());
+                //options.Filters.Add(new RequireHttpsAttribute ());
             });
 
             // add CORS policy for non-IdentityServer endpoints
@@ -132,65 +118,33 @@ namespace Vanda.IdentityServer
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            InitializeAspNetIdentityDatabase(app);
-            InitializeIdentityServerDatabase(app);
-
             app.UseCors("api");
+            app.UseIdentityServer();
+
+            var defaultDb = Configuration.GetValue<string>("DefaultDb").ToUpper();
+
+            switch(defaultDb)
+            {
+                case "MSSQL":
+                default:
+                    SeedMSSQLData.InitializeAspNetIdentityDatabase(app);
+                    SeedMSSQLData.InitializeIdentityServerDatabase(app);
+                    break;
+                case "MONGODB":
+                    // Setup Databases
+                    using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+                    {
+                        SeedMongoDBData.EnsureSeedData(serviceScope.ServiceProvider.GetService<IConfigurationDbContext>());
+                    }
+
+                    app.UseIdentityServerMongoDBTokenCleanup(applicationLifetime);
+                    break;
+                case "POSTSQL":
+                    break;
+            }
 
             app.UseStaticFiles();
-            app.UseIdentityServer();
             app.UseMvcWithDefaultRoute();
-        }
-
-        private void InitializeAspNetIdentityDatabase(IApplicationBuilder app)
-        {
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                serviceScope.ServiceProvider.GetService<ApplicationDbContext>().Database.Migrate();
-
-                var userManager = app.ApplicationServices.GetService<UserManager<ApplicationUser>>();
-                var roleManager = app.ApplicationServices.GetService<RoleManager<IdentityRole>>();
-
-                serviceScope.ServiceProvider.GetService<ApplicationDbContext>().EnsureSeedData(userManager, roleManager);
-            }
-        }
-
-        private void InitializeIdentityServerDatabase(IApplicationBuilder app)
-        {
-            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
-
-                var context = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-                context.Database.Migrate();
-
-                if (!context.Clients.Any())
-                {
-                    foreach (var client in Clients.Get().ToList())
-                    {
-                        context.Clients.Add(client.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
-
-                if (!context.IdentityResources.Any())
-                {
-                    foreach (var resource in Resources.GetIdentityResources().ToList())
-                    {
-                        context.IdentityResources.Add(resource.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
-
-                if (!context.ApiResources.Any())
-                {
-                    foreach (var resource in Resources.GetApiResources().ToList())
-                    {
-                        context.ApiResources.Add(resource.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
-            }
         }
     }
 }

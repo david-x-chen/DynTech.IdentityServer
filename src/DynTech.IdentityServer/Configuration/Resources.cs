@@ -1,7 +1,7 @@
 ﻿using IdentityServer4.Models;
 using System.Collections.Generic;
 
-namespace Vanda.IdentityServer.Configuration
+namespace DynTech.IdentityServer.Configuration
 {
     /// <summary>
     /// </summary>

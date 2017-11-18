@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Vanda.IdentityServer.Models.ManageViewModels;
-using Vanda.IdentityServer.Models;
-using Vanda.IdentityServer.Services;
+using DynTech.IdentityServer.Models.ManageViewModels;
+using DynTech.IdentityServer.Models;
+using DynTech.IdentityServer.Services;
 
-namespace Vanda.IdentityServer.Controllers
+namespace DynTech.IdentityServer.Controllers
 {
     /// <summary>
     /// 

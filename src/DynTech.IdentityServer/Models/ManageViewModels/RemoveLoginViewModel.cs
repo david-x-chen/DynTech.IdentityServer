@@ -1,4 +1,4 @@
-﻿namespace Vanda.IdentityServer.Models.ManageViewModels
+﻿namespace DynTech.IdentityServer.Models.ManageViewModels
 {
     public class RemoveLoginViewModel
     {

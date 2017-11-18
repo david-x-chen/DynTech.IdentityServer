@@ -1,6 +1,6 @@
 ﻿using IdentityServer4.Models;
 
-namespace Vanda.IdentityServer.Models
+namespace DynTech.IdentityServer.Models
 {
     public class ErrorViewModel
     {

@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using Vanda.IdentityServer.Models;
+using DynTech.IdentityServer.Models;
 
-namespace Vanda.IdentityServer
+namespace DynTech.IdentityServer
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -46,7 +46,7 @@ namespace Vanda.IdentityServer
                 adminUser.UserName = "updateservice@magicsoft-asia.com";
                 adminUser.Email = "updateservice@magicsoft-asia.com";
 
-                await userMgr.CreateAsync(adminUser, "Vanda@82632");
+                await userMgr.CreateAsync(adminUser, "DynTech@82632");
 
                 await userMgr.SetLockoutEnabledAsync(adminUser, false);
                 await userMgr.AddToRoleAsync(adminUser, "admin");

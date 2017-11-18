@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using IdentityServer4;
 
-namespace Vanda.IdentityServer.Configuration
+namespace DynTech.IdentityServer.Configuration
 {
     /// <summary>
     /// </summary>
@@ -21,8 +21,8 @@ namespace Vanda.IdentityServer.Configuration
             {
                 new Client
                 {
-                    ClientId = "vandaUpdate",
-                    ClientName = "Vanda Update Service Client",
+                    ClientId = "DynTechUpdate",
+                    ClientName = "DynTech Update Service Client",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
                     RedirectUris = new List<string>
@@ -48,8 +48,8 @@ namespace Vanda.IdentityServer.Configuration
                 },
                 new Client
                 {
-                    ClientId = "vandaCHAS",
-                    ClientName = "Vanda CHAS Service Client",
+                    ClientId = "DynTechCHAS",
+                    ClientName = "DynTech CHAS Service Client",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
                     RedirectUris = new List<string>

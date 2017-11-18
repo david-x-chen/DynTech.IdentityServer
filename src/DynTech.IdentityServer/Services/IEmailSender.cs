@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Vanda.IdentityServer.Services
+namespace DynTech.IdentityServer.Services
 {
     public interface IEmailSender
     {

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Vanda.IdentityServer
+namespace DynTech.IdentityServer
 {
     public class Program
     {

@@ -7,9 +7,9 @@ using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
-using Vanda.IdentityServer.Models;
+using DynTech.IdentityServer.Models;
 
-namespace Vanda.IdentityServer.Services
+namespace DynTech.IdentityServer.Services
 {
     public class UserClaimsProfileService : IProfileService
     {

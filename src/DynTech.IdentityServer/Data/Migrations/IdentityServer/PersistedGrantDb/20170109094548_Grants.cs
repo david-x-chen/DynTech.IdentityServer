@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Vanda.IdentityServer.Data.Migrations.IdentityServer.PersistedGrantDb
+namespace DynTech.IdentityServer.Data.Migrations.IdentityServer.PersistedGrantDb
 {
     public partial class Grants : Migration
     {

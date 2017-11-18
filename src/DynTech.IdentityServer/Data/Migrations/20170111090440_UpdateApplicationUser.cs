@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Vanda.IdentityServer.Data.Migrations
+namespace DynTech.IdentityServer.Data.Migrations
 {
     public partial class UpdateApplicationUser : Migration
     {

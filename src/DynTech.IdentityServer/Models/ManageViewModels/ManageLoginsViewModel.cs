@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
-namespace Vanda.IdentityServer.Models.ManageViewModels
+namespace DynTech.IdentityServer.Models.ManageViewModels
 {
     public class ManageLoginsViewModel
     {

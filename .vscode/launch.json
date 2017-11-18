@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/Vanda.IdentityServer/bin/Debug/netcoreapp1.1/Vanda.IdentityServer.dll",
+            "program": "${workspaceRoot}/src/DynTech.IdentityServer/bin/Debug/netcoreapp1.1/DynTech.IdentityServer.dll",
             "args": [],
             "cwd": "${workspaceRoot}",
             "externalConsole": false,

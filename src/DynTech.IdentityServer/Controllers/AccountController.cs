@@ -11,12 +11,12 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Http;
-using Vanda.IdentityServer.Models;
-using Vanda.IdentityServer.Services;
-using Vanda.IdentityServer.Attributes;
-using Vanda.IdentityServer.Models.AccountViewModels;
+using DynTech.IdentityServer.Models;
+using DynTech.IdentityServer.Services;
+using DynTech.IdentityServer.Attributes;
+using DynTech.IdentityServer.Models.AccountViewModels;
 
-namespace Vanda.IdentityServer.Controllers
+namespace DynTech.IdentityServer.Controllers
 {
     [Authorize]
     [SecurityHeaders]

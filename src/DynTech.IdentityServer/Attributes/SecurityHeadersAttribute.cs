@@ -2,7 +2,7 @@ using IdentityServer4.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Vanda.IdentityServer.Attributes
+namespace DynTech.IdentityServer.Attributes
 {
     public class SecurityHeadersAttribute : ActionFilterAttribute
     {

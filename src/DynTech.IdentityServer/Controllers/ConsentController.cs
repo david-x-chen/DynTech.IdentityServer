@@ -3,10 +3,10 @@ using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using Vanda.IdentityServer.Models.Consent;
-using Vanda.IdentityServer.Services;
+using DynTech.IdentityServer.Models.Consent;
+using DynTech.IdentityServer.Services;
 
-namespace Vanda.IdentityServer.Controllers
+namespace DynTech.IdentityServer.Controllers
 {
     public class ConsentController : Controller
     {

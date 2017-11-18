@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Vanda.IdentityServer.Data.Migrations.IdentityServer.ConfigurationDb
+namespace DynTech.IdentityServer.Data.Migrations.IdentityServer.ConfigurationDb
 {
     public partial class Config : Migration
     {

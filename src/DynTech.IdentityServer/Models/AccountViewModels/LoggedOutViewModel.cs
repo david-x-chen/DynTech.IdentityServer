@@ -1,4 +1,4 @@
-﻿namespace Vanda.IdentityServer.Models.AccountViewModels
+﻿namespace DynTech.IdentityServer.Models.AccountViewModels
 {
     public class LoggedOutViewModel
     {

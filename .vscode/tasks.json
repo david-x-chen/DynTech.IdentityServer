@@ -7,7 +7,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}/src/Vanda.IdentityServer/project.json"
+                "${workspaceRoot}/src/DynTech.IdentityServer/project.json"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Vanda.IdentityServer.Models.AccountViewModels
+namespace DynTech.IdentityServer.Models.AccountViewModels
 {
     public class LoginViewModel : LoginInputModel
     {

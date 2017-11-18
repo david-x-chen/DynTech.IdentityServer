@@ -5,10 +5,10 @@ using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
-using Vanda.IdentityServer.Models.Consent;
+using DynTech.IdentityServer.Models.Consent;
 using IdentityServer4;
 
-namespace Vanda.IdentityServer.Services
+namespace DynTech.IdentityServer.Services
 {
     public class ConsentService
     {

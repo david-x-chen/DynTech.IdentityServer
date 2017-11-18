@@ -1,6 +1,6 @@
 using System;
 
-namespace Vanda.IdentityServer.Models.Account
+namespace DynTech.IdentityServer.Models.Account
 {
     public class AccountOptions
     {

@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Vanda.IdentityServer;
+using DynTech.IdentityServer;
 
-namespace Vanda.IdentityServer.Migrations
+namespace DynTech.IdentityServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("00000000000000_CreateIdentitySchema")]
@@ -124,7 +124,7 @@ namespace Vanda.IdentityServer.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Vanda.IdentityServer.Models.ApplicationUser", b =>
+            modelBuilder.Entity("DynTech.IdentityServer.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id");
 
@@ -183,7 +183,7 @@ namespace Vanda.IdentityServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Vanda.IdentityServer.Models.ApplicationUser")
+                    b.HasOne("DynTech.IdentityServer.Models.ApplicationUser")
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -191,7 +191,7 @@ namespace Vanda.IdentityServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Vanda.IdentityServer.Models.ApplicationUser")
+                    b.HasOne("DynTech.IdentityServer.Models.ApplicationUser")
                         .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -204,7 +204,7 @@ namespace Vanda.IdentityServer.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Vanda.IdentityServer.Models.ApplicationUser")
+                    b.HasOne("DynTech.IdentityServer.Models.ApplicationUser")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
