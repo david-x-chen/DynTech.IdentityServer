@@ -11,7 +11,7 @@ using DynTech.IdentityServer.Services;
 namespace DynTech.IdentityServer.Controllers
 {
     /// <summary>
-    /// 
+    /// Manage controller.
     /// </summary>
     [Authorize]
     public class ManageController : Controller
@@ -22,6 +22,14 @@ namespace DynTech.IdentityServer.Controllers
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Controllers.ManageController"/> class.
+        /// </summary>
+        /// <param name="userManager">User manager.</param>
+        /// <param name="signInManager">Sign in manager.</param>
+        /// <param name="emailSender">Email sender.</param>
+        /// <param name="smsSender">Sms sender.</param>
+        /// <param name="loggerFactory">Logger factory.</param>
         public ManageController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
@@ -38,6 +46,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Manage/Index
+        /// <summary>
+        /// Index the specified message.
+        /// </summary>
+        /// <returns>The index.</returns>
+        /// <param name="message">Message.</param>
         [HttpGet]
         public async Task<IActionResult> Index(ManageMessageId? message = null)
         {
@@ -68,6 +81,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Manage/RemoveLogin
+        /// <summary>
+        /// Removes the login.
+        /// </summary>
+        /// <returns>The login.</returns>
+        /// <param name="account">Account.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel account)
@@ -88,6 +106,10 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Manage/AddPhoneNumber
+        /// <summary>
+        /// Adds the phone number.
+        /// </summary>
+        /// <returns>The phone number.</returns>
         public IActionResult AddPhoneNumber()
         {
             return View();
@@ -95,6 +117,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Manage/AddPhoneNumber
+        /// <summary>
+        /// Adds the phone number.
+        /// </summary>
+        /// <returns>The phone number.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
@@ -116,6 +143,10 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Manage/EnableTwoFactorAuthentication
+        /// <summary>
+        /// Enables the two factor authentication.
+        /// </summary>
+        /// <returns>The two factor authentication.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnableTwoFactorAuthentication()
@@ -132,6 +163,10 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Manage/DisableTwoFactorAuthentication
+        /// <summary>
+        /// Disables the two factor authentication.
+        /// </summary>
+        /// <returns>The two factor authentication.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DisableTwoFactorAuthentication()
@@ -148,6 +183,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Manage/VerifyPhoneNumber
+        /// <summary>
+        /// Verifies the phone number.
+        /// </summary>
+        /// <returns>The phone number.</returns>
+        /// <param name="phoneNumber">Phone number.</param>
         [HttpGet]
         public async Task<IActionResult> VerifyPhoneNumber(string phoneNumber)
         {
@@ -163,6 +203,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Manage/VerifyPhoneNumber
+        /// <summary>
+        /// Verifies the phone number.
+        /// </summary>
+        /// <returns>The phone number.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
@@ -188,6 +233,10 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Manage/RemovePhoneNumber
+        /// <summary>
+        /// Removes the phone number.
+        /// </summary>
+        /// <returns>The phone number.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemovePhoneNumber()
@@ -207,6 +256,10 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Manage/ChangePassword
+        /// <summary>
+        /// Changes the password.
+        /// </summary>
+        /// <returns>The password.</returns>
         [HttpGet]
         public IActionResult ChangePassword()
         {
@@ -215,6 +268,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Manage/ChangePassword
+        /// <summary>
+        /// Changes the password.
+        /// </summary>
+        /// <returns>The password.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -241,6 +299,10 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Manage/SetPassword
+        /// <summary>
+        /// Sets the password.
+        /// </summary>
+        /// <returns>The password.</returns>
         [HttpGet]
         public IActionResult SetPassword()
         {
@@ -249,6 +311,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Manage/SetPassword
+        /// <summary>
+        /// Sets the password.
+        /// </summary>
+        /// <returns>The password.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
@@ -274,6 +341,11 @@ namespace DynTech.IdentityServer.Controllers
         }
 
         //GET: /Manage/ManageLogins
+        /// <summary>
+        /// Manages the logins.
+        /// </summary>
+        /// <returns>The logins.</returns>
+        /// <param name="message">Message.</param>
         [HttpGet]
         public async Task<IActionResult> ManageLogins(ManageMessageId? message = null)
         {
@@ -300,6 +372,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Manage/LinkLogin
+        /// <summary>
+        /// Links the login.
+        /// </summary>
+        /// <returns>The login.</returns>
+        /// <param name="provider">Provider.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult LinkLogin(string provider)
@@ -312,6 +389,10 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Manage/LinkLoginCallback
+        /// <summary>
+        /// Links the login callback.
+        /// </summary>
+        /// <returns>The login callback.</returns>
         [HttpGet]
         public async Task<ActionResult> LinkLoginCallback()
         {
@@ -332,6 +413,10 @@ namespace DynTech.IdentityServer.Controllers
 
         #region Helpers
 
+        /// <summary>
+        /// Adds the errors.
+        /// </summary>
+        /// <param name="result">Result.</param>
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)
@@ -340,18 +425,49 @@ namespace DynTech.IdentityServer.Controllers
             }
         }
 
+        /// <summary>
+        /// Manage message identifier.
+        /// </summary>
         public enum ManageMessageId
         {
+            /// <summary>
+            /// The add phone success.
+            /// </summary>
             AddPhoneSuccess,
+            /// <summary>
+            /// The add login success.
+            /// </summary>
             AddLoginSuccess,
+            /// <summary>
+            /// The change password success.
+            /// </summary>
             ChangePasswordSuccess,
+            /// <summary>
+            /// The set two factor success.
+            /// </summary>
             SetTwoFactorSuccess,
+            /// <summary>
+            /// The set password success.
+            /// </summary>
             SetPasswordSuccess,
+            /// <summary>
+            /// The remove login success.
+            /// </summary>
             RemoveLoginSuccess,
+            /// <summary>
+            /// The remove phone success.
+            /// </summary>
             RemovePhoneSuccess,
+            /// <summary>
+            /// The error.
+            /// </summary>
             Error
         }
 
+        /// <summary>
+        /// Gets the current user async.
+        /// </summary>
+        /// <returns>The current user async.</returns>
         private Task<ApplicationUser> GetCurrentUserAsync()
         {
             return _userManager.GetUserAsync(HttpContext.User);

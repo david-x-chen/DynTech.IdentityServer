@@ -2,7 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynTech.IdentityServer", "src\DynTech.IdentityServer\DynTech.IdentityServer.csproj", "{3DD47E3F-947E-4EAE-9B6A-9D4F35B40802}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynTech.IdentityServer", "src\DynTech.IdentityServer\DynTech.IdentityServer.csproj", "{3DD47E3F-947E-4EAE-9B6A-9D4F35B40802}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.AspNetCore.Identity.MongoDB", "src\Microsoft.AspNetCore.Identity.MongoDB\Microsoft.AspNetCore.Identity.MongoDB.csproj", "{994F9DCA-2898-466A-A40A-021EA2200351}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,6 +16,10 @@ Global
 		{3DD47E3F-947E-4EAE-9B6A-9D4F35B40802}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DD47E3F-947E-4EAE-9B6A-9D4F35B40802}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DD47E3F-947E-4EAE-9B6A-9D4F35B40802}.Release|Any CPU.Build.0 = Release|Any CPU
+		{994F9DCA-2898-466A-A40A-021EA2200351}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{994F9DCA-2898-466A-A40A-021EA2200351}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{994F9DCA-2898-466A-A40A-021EA2200351}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{994F9DCA-2898-466A-A40A-021EA2200351}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,26 +7,34 @@ using DynTech.IdentityServer.Models;
 namespace DynTech.IdentityServer.Controllers
 {
     /// <summary>
-    /// 
+    /// Home controller.
     /// </summary>
     public class HomeController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
 
         /// <summary>
-        /// 
+        /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Controllers.HomeController"/> class.
         /// </summary>
-        /// <param name="interaction"></param>
+        /// <param name="interaction">Interaction.</param>
         public HomeController(IIdentityServerInteractionService interaction)
         {
             _interaction = interaction;
         }
 
-        public async Task<IActionResult> Index()
+        /// <summary>
+        /// Index this instance.
+        /// </summary>
+        /// <returns>The index.</returns>
+        public IActionResult Index()
         {
             return View();
         }
 
+        /// <summary>
+        /// About this instance.
+        /// </summary>
+        /// <returns>The about.</returns>
         [Route("Home/About")]
         public IActionResult About()
         {
@@ -35,6 +43,10 @@ namespace DynTech.IdentityServer.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Contact this instance.
+        /// </summary>
+        /// <returns>The contact.</returns>
         [Route("Home/Contact")]
         public IActionResult Contact()
         {
@@ -43,6 +55,11 @@ namespace DynTech.IdentityServer.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Error the specified errorId.
+        /// </summary>
+        /// <returns>The error.</returns>
+        /// <param name="errorId">Error identifier.</param>
         [Route("Home/Error")]
         public async Task<IActionResult> Error([FromQuery]string errorId)
         {

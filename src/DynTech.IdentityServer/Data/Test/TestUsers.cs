@@ -5,8 +5,14 @@ using System.Security.Claims;
 
 namespace DynTech.IdentityServer.Data.Test
 {
+    /// <summary>
+    /// Test users.
+    /// </summary>
     public class TestUsers
     {
+        /// <summary>
+        /// The users.
+        /// </summary>
         public static List<TestUser> Users = new List<TestUser>
         {
             new TestUser{SubjectId = "818727", Username = "alice", Password = "alice", 

@@ -1,20 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Identity;
-using System.Reflection;
-using DynTech.IdentityServer.Models;
 using DynTech.IdentityServer.Services;
-using System.Linq;
-using IdentityServer4;
-using IdentityServer4.EntityFramework.Mappers;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Options;
-using DynTech.IdentityServer.Configuration;
-using Microsoft.AspNetCore.Mvc;
 using DynTech.IdentityServer.Data.Seeding;
 using IdentityServer4.MongoDB.Interfaces;
 
@@ -58,31 +47,16 @@ namespace DynTech.IdentityServer
         {
             services.AddLogging();
 
-            var defaultDb = Configuration.GetValue<string>("DefaultDb").ToUpper();
-
-            switch(defaultDb)
-            {
-                case "MSSQL":
-                default:
-                    services.AddIdentityServerWithMSSQL(Configuration);
-                    break;
-                case "MONGODB":
-                    services.AddIdentityServerWithMongoDB(Configuration);
-                    break;
-                case "POSTSQL":
-                    services.AddIdentityServerWithPostgreSQL(Configuration);
-                    break;
-            }
+            services.AddIdentityServerWithMongoDB(Configuration);
 
             services.AddExternalIdentityProviders(Configuration);
-
-            // Add application services.
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
 
             services.AddMvc(options => {
                 //options.Filters.Add(new RequireHttpsAttribute ());
             });
+
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<ISmsSender, AuthMessageSender>();
 
             // add CORS policy for non-IdentityServer endpoints
             services.AddCors(options =>
@@ -119,29 +93,16 @@ namespace DynTech.IdentityServer
             }
 
             app.UseCors("api");
+            app.UseAuthentication();
             app.UseIdentityServer();
 
-            var defaultDb = Configuration.GetValue<string>("DefaultDb").ToUpper();
-
-            switch(defaultDb)
+            // Setup Databases
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                case "MSSQL":
-                default:
-                    SeedMSSQLData.InitializeAspNetIdentityDatabase(app);
-                    SeedMSSQLData.InitializeIdentityServerDatabase(app);
-                    break;
-                case "MONGODB":
-                    // Setup Databases
-                    using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-                    {
-                        SeedMongoDBData.EnsureSeedData(serviceScope.ServiceProvider.GetService<IConfigurationDbContext>());
-                    }
-
-                    app.UseIdentityServerMongoDBTokenCleanup(applicationLifetime);
-                    break;
-                case "POSTSQL":
-                    break;
+                SeedMongoDBData.EnsureSeedData(serviceScope.ServiceProvider.GetService<IConfigurationDbContext>());
             }
+
+            app.UseIdentityServerMongoDBTokenCleanup(applicationLifetime);
 
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();

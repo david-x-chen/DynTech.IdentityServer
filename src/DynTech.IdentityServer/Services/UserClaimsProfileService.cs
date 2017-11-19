@@ -11,17 +11,30 @@ using DynTech.IdentityServer.Models;
 
 namespace DynTech.IdentityServer.Services
 {
+    /// <summary>
+    /// User claims profile service.
+    /// </summary>
     public class UserClaimsProfileService : IProfileService
     {
         private readonly IUserClaimsPrincipalFactory<ApplicationUser> _claimsFactory;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Services.UserClaimsProfileService"/> class.
+        /// </summary>
+        /// <param name="userManager">User manager.</param>
+        /// <param name="claimsFactory">Claims factory.</param>
         public UserClaimsProfileService(UserManager<ApplicationUser> userManager, IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory)
         {
             _userManager = userManager;
             _claimsFactory = claimsFactory;
         }
 
+        /// <summary>
+        /// Gets the profile data async.
+        /// </summary>
+        /// <returns>The profile data async.</returns>
+        /// <param name="context">Context.</param>
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             var sub = context.Subject.GetSubjectId();
@@ -44,32 +57,18 @@ namespace DynTech.IdentityServer.Services
             }
 
             // Update client
-            if (user.UpdateApiRoles == "updateApi.admin")
+            if (user.ApiRoles == "api.admin")
             {
-                claims.Add(new Claim(JwtClaimTypes.Role, "updateApi.admin"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "updateApi.user"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "updateApi"));
-                claims.Add(new Claim(JwtClaimTypes.Scope, "updateApi"));
+                claims.Add(new Claim(JwtClaimTypes.Role, "api.admin"));
+                claims.Add(new Claim(JwtClaimTypes.Role, "api.user"));
+                claims.Add(new Claim(JwtClaimTypes.Role, "api"));
+                claims.Add(new Claim(JwtClaimTypes.Scope, "api"));
             }
             else
             {
-                claims.Add(new Claim(JwtClaimTypes.Role, "updateApi.user"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "updateApi"));
-                claims.Add(new Claim(JwtClaimTypes.Scope, "updateApi"));
-            }
-
-            if (user.ChasApiRoles == "chasApi.admin")
-            {
-                claims.Add(new Claim(JwtClaimTypes.Role, "chasApi.admin"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "chasApi.user"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "chasApi"));
-                claims.Add(new Claim(JwtClaimTypes.Scope, "chasApi"));
-            }
-            else
-            {
-                claims.Add(new Claim(JwtClaimTypes.Role, "chasApi.user"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "chasApi"));
-                claims.Add(new Claim(JwtClaimTypes.Scope, "chasApi"));
+                claims.Add(new Claim(JwtClaimTypes.Role, "api.user"));
+                claims.Add(new Claim(JwtClaimTypes.Role, "api"));
+                claims.Add(new Claim(JwtClaimTypes.Scope, "api"));
             }
 
             claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email));
@@ -77,6 +76,11 @@ namespace DynTech.IdentityServer.Services
             context.IssuedClaims = claims;
         }
 
+        /// <summary>
+        /// Ises the active async.
+        /// </summary>
+        /// <returns>The active async.</returns>
+        /// <param name="context">Context.</param>
         public async Task IsActiveAsync(IsActiveContext context)
         {
             var sub = context.Subject.GetSubjectId();

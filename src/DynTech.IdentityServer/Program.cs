@@ -3,8 +3,15 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace DynTech.IdentityServer
 {
+    /// <summary>
+    /// Program.
+    /// </summary>
     public class Program
     {
+        /// <summary>
+        /// The entry point of the program, where the program control starts and ends.
+        /// </summary>
+        /// <param name="args">The command-line arguments.</param>
         public static void Main(string[] args)
         {
             var host = new WebHostBuilder()

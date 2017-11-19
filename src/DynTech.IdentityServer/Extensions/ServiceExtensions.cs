@@ -1,17 +1,60 @@
-using DynTech.IdentityServer.Models;
-using DynTech.IdentityServer.Services;
+using DynTech.IdentityServer.Data.Test;
 using IdentityServer4;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity.MongoDB;
+using IdentityServer4.Services;
+using DynTech.IdentityServer.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace DynTech.IdentityServer
 {
-    public static partial class ServiceExtensions
+    /// <summary>
+    /// Service extensions.
+    /// </summary>
+    public static class ServiceExtensions
     {
+        /// <summary>
+        /// Adds the identity server with mongo db.
+        /// </summary>
+        /// <returns>The identity server with mongo db.</returns>
+        /// <param name="services">Services.</param>
+        /// <param name="Configuration">Configuration.</param>
+        public static IServiceCollection AddIdentityServerWithMongoDB(this IServiceCollection services, IConfigurationRoot Configuration)
+        {
+            var mongodb = Configuration.GetSection("MongoDB");
+
+            services.AddTransient<IProfileService, UserClaimsProfileService>();
+
+            services.AddIdentityServer(options =>
+                {
+                    options.Events.RaiseSuccessEvents = true;
+                    options.Events.RaiseFailureEvents = true;
+                    options.Events.RaiseErrorEvents = true;
+                })
+                .AddConfigurationStore(mongodb)
+                .AddOperationalStore(mongodb)
+                .AddDeveloperSigningCredential()
+                .AddDeveloperSigningCredential()
+                .AddExtensionGrantValidator<ExtensionGrantValidator>()
+                .AddExtensionGrantValidator<NoSubjectExtensionGrantValidator>()
+                .AddJwtBearerClientAuthentication()
+                .AddAppAuthRedirectUriValidator()
+                .AddProfileService<UserClaimsProfileService>();
+
+            var connectionStr = mongodb.GetValue<string>("ConnectionString") + "/" + mongodb.GetValue<string>("Database");
+            services.AddIdentityWithMongoStores(connectionStr)
+                    .AddDefaultTokenProviders();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the external identity providers.
+        /// </summary>
+        /// <returns>The external identity providers.</returns>
+        /// <param name="services">Services.</param>
+        /// <param name="Configuration">Configuration.</param>
         public static IServiceCollection AddExternalIdentityProviders(this IServiceCollection services, IConfigurationRoot Configuration)
         {
             // configures the OpenIdConnect handlers to persist the state parameter into the server-side IDistributedCache.
@@ -19,7 +62,7 @@ namespace DynTech.IdentityServer
 
             var authSection = Configuration.GetSection("Authentication");
 
-            /*
+
             services.AddAuthentication()
                 .AddGoogle("Google", options =>
                 {
@@ -28,6 +71,7 @@ namespace DynTech.IdentityServer
                     options.ClientId = authSection.GetSection("Google").GetValue<string>("clientId");
                     options.ClientSecret = authSection.GetSection("Google").GetValue<string>("clientSecret");
                 });
+            /*
                 .AddOpenIdConnect("demoidsrv", "IdentityServer", options =>
                 {
                     options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;

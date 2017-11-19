@@ -1,94 +1,95 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.MongoDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using IdentityServer4.Services;
-using IdentityServer4.Stores;
-using Microsoft.AspNetCore.Http.Authentication;
-using Microsoft.AspNetCore.Http;
-using DynTech.IdentityServer.Models;
 using DynTech.IdentityServer.Services;
-using DynTech.IdentityServer.Attributes;
 using DynTech.IdentityServer.Models.AccountViewModels;
+using System.Collections.Generic;
+using IdentityModel;
 
 namespace DynTech.IdentityServer.Controllers
 {
+    /// <summary>
+    /// Account controller.
+    /// </summary>
     [Authorize]
-    [SecurityHeaders]
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
-        private readonly IIdentityServerInteractionService _interaction;
-        private readonly IClientStore _clientStore;
-        private readonly AccountService _account;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Controllers.AccountController"/> class.
+        /// </summary>
+        /// <param name="userManager">User manager.</param>
+        /// <param name="signInManager">Sign in manager.</param>
+        /// <param name="emailSender">Email sender.</param>
+        /// <param name="smsSender">Sms sender.</param>
+        /// <param name="loggerFactory">Logger factory.</param>
         public AccountController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            ILoggerFactory loggerFactory,
-            IIdentityServerInteractionService interaction,
-            IHttpContextAccessor httpContext,
-            IClientStore clientStore)
+            ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
-            _interaction = interaction;
-            _clientStore = clientStore;
-
-            _account = new AccountService(interaction, httpContext, clientStore);
         }
 
         //
         // GET: /Account/Login
-        [AllowAnonymous]
+        /// <summary>
+        /// Login the specified returnUrl.
+        /// </summary>
+        /// <returns>The login.</returns>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpGet]
-        public async Task<IActionResult> Login(string returnUrl)
+        [AllowAnonymous]
+        public IActionResult Login(string returnUrl = null)
         {
-            var vm = await _account.BuildLoginViewModelAsync(returnUrl);
-
-            if (vm.IsExternalLoginOnly)
-            {
-                // only one option for logging in
-                return ExternalLogin(vm.ExternalProviders.First().AuthenticationScheme, returnUrl);
-            }
-
-            return View(vm);
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
         }
 
         //
         // POST: /Account/Login
+        /// <summary>
+        /// Login the specified model and returnUrl.
+        /// </summary>
+        /// <returns>The login.</returns>
+        /// <param name="model">Model.</param>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginInputModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberLogin, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return RedirectToLocal(model.ReturnUrl);
+                    return RedirectToLocal(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberLogin });
+                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
@@ -98,66 +99,91 @@ namespace DynTech.IdentityServer.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(await _account.BuildLoginViewModelAsync(model));
+                    return View(model);
                 }
             }
 
             // If we got this far, something failed, redisplay form
-            return View(await _account.BuildLoginViewModelAsync(model));
+            return View(model);
         }
 
+        //
+        // GET: /Account/Register
         /// <summary>
-        /// Show logout page
+        /// Register the specified returnUrl.
         /// </summary>
-        [AllowAnonymous]
+        /// <returns>The register.</returns>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpGet]
-        public async Task<IActionResult> Logout(string logoutId)
+        [AllowAnonymous]
+        public IActionResult Register(string returnUrl = null)
         {
-            var vm = await _account.BuildLogoutViewModelAsync(logoutId);
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
 
-            if (vm.ShowLogoutPrompt == false)
+        //
+        // POST: /Account/Register
+        /// <summary>
+        /// Register the specified model and returnUrl.
+        /// </summary>
+        /// <returns>The register.</returns>
+        /// <param name="model">Model.</param>
+        /// <param name="returnUrl">Return URL.</param>
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
             {
-                // no need to show prompt
-                return await Logout(vm);
+                var defaultClaims = new List<IdentityUserClaim>();
+                defaultClaims.Add(new IdentityUserClaim(new Claim(JwtClaimTypes.Role, "user")));
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email, Claims =  defaultClaims};
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                    // Send an email with this link
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation(3, "User created a new account with password.");
+                    return RedirectToLocal(returnUrl);
+                }
+                AddErrors(result);
             }
 
-            return View(vm);
+            // If we got this far, something failed, redisplay form
+            return View(model);
         }
 
+        //
+        // POST: /Account/LogOff
         /// <summary>
-        /// Handle logout page postback
+        /// Logs the off.
         /// </summary>
+        /// <returns>The off.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AllowAnonymous]
-        public async Task<IActionResult> Logout(LogoutViewModel model)
+        public async Task<IActionResult> LogOff()
         {
-            var vm = await _account.BuildLoggedOutViewModelAsync(model.LogoutId);
-            if (vm.TriggerExternalSignout)
-            {
-                string url = Url.Action("Logout", new { logoutId = vm.LogoutId });
-                try
-                {
-                    // hack: try/catch to handle social providers that throw
-                    await HttpContext.Authentication.SignOutAsync(vm.ExternalAuthenticationScheme,
-                        new AuthenticationProperties { RedirectUri = url });
-                }
-                catch (NotSupportedException) // this is for the external providers that don't have signout
-                {
-                }
-                catch (InvalidOperationException) // this is for Windows/Negotiate
-                {
-                }
-            }
-
-            // delete authentication cookie
             await _signInManager.SignOutAsync();
-
-            return View("LoggedOut", vm);
+            _logger.LogInformation(4, "User logged out.");
+            return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
         //
         // POST: /Account/ExternalLogin
+        /// <summary>
+        /// Externals the login.
+        /// </summary>
+        /// <returns>The login.</returns>
+        /// <param name="provider">Provider.</param>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -171,6 +197,12 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Account/ExternalLoginCallback
+        /// <summary>
+        /// Externals the login callback.
+        /// </summary>
+        /// <returns>The login callback.</returns>
+        /// <param name="returnUrl">Return URL.</param>
+        /// <param name="remoteError">Remote error.</param>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
@@ -212,48 +244,13 @@ namespace DynTech.IdentityServer.Controllers
         }
 
         //
-        // GET: /Account/Register
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Register(string returnUrl = null)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
-        }
-
-        //
-        // POST: /Account/Register
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
-            {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                    // Send an email with this link
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation(3, "User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
-                }
-                AddErrors(result);
-            }
-
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-        
-        //
         // POST: /Account/ExternalLoginConfirmation
+        /// <summary>
+        /// Externals the login confirmation.
+        /// </summary>
+        /// <returns>The login confirmation.</returns>
+        /// <param name="model">Model.</param>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -267,7 +264,7 @@ namespace DynTech.IdentityServer.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -287,6 +284,12 @@ namespace DynTech.IdentityServer.Controllers
         }
 
         // GET: /Account/ConfirmEmail
+        /// <summary>
+        /// Confirms the email.
+        /// </summary>
+        /// <returns>The email.</returns>
+        /// <param name="userId">User identifier.</param>
+        /// <param name="code">Code.</param>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
@@ -306,6 +309,10 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Account/ForgotPassword
+        /// <summary>
+        /// Forgots the password.
+        /// </summary>
+        /// <returns>The password.</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPassword()
@@ -315,6 +322,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Account/ForgotPassword
+        /// <summary>
+        /// Forgots the password.
+        /// </summary>
+        /// <returns>The password.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -344,6 +356,10 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Account/ForgotPasswordConfirmation
+        /// <summary>
+        /// Forgots the password confirmation.
+        /// </summary>
+        /// <returns>The password confirmation.</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPasswordConfirmation()
@@ -353,6 +369,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Account/ResetPassword
+        /// <summary>
+        /// Resets the password.
+        /// </summary>
+        /// <returns>The password.</returns>
+        /// <param name="code">Code.</param>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPassword(string code = null)
@@ -362,6 +383,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Account/ResetPassword
+        /// <summary>
+        /// Resets the password.
+        /// </summary>
+        /// <returns>The password.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -388,6 +414,10 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Account/ResetPasswordConfirmation
+        /// <summary>
+        /// Resets the password confirmation.
+        /// </summary>
+        /// <returns>The password confirmation.</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()
@@ -397,6 +427,12 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Account/SendCode
+        /// <summary>
+        /// Sends the code.
+        /// </summary>
+        /// <returns>The code.</returns>
+        /// <param name="returnUrl">Return URL.</param>
+        /// <param name="rememberMe">If set to <c>true</c> remember me.</param>
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult> SendCode(string returnUrl = null, bool rememberMe = false)
@@ -413,6 +449,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Account/SendCode
+        /// <summary>
+        /// Sends the code.
+        /// </summary>
+        /// <returns>The code.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -451,6 +492,13 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // GET: /Account/VerifyCode
+        /// <summary>
+        /// Verifies the code.
+        /// </summary>
+        /// <returns>The code.</returns>
+        /// <param name="provider">Provider.</param>
+        /// <param name="rememberMe">If set to <c>true</c> remember me.</param>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> VerifyCode(string provider, bool rememberMe, string returnUrl = null)
@@ -466,6 +514,11 @@ namespace DynTech.IdentityServer.Controllers
 
         //
         // POST: /Account/VerifyCode
+        /// <summary>
+        /// Verifies the code.
+        /// </summary>
+        /// <returns>The code.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -506,7 +559,7 @@ namespace DynTech.IdentityServer.Controllers
             }
         }
 
-        private Task<ApplicationUser> GetCurrentUserAsync()
+        private Task<IdentityUser> GetCurrentUserAsync()
         {
             return _userManager.GetUserAsync(HttpContext.User);
         }

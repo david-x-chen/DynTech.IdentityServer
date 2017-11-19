@@ -5,8 +5,15 @@ using IdentityServer4.MongoDB.Mappers;
 
 namespace DynTech.IdentityServer.Data.Seeding
 {
+    /// <summary>
+    /// Seed mongo DBD ata.
+    /// </summary>
     public static class SeedMongoDBData
     {
+        /// <summary>
+        /// Ensures the seed data.
+        /// </summary>
+        /// <param name="context">Context.</param>
         public static void EnsureSeedData(IConfigurationDbContext context)
         {
             if (!context.Clients.Any())
