@@ -30,6 +30,14 @@ namespace DynTech.IdentityServer.Controllers
 
         private const string AuthenicatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Controllers.ManageController"/> class.
+        /// </summary>
+        /// <param name="userManager">User manager.</param>
+        /// <param name="signInManager">Sign in manager.</param>
+        /// <param name="emailSender">Email sender.</param>
+        /// <param name="logger">Logger.</param>
+        /// <param name="urlEncoder">URL encoder.</param>
         public ManageController(
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
@@ -44,9 +52,17 @@ namespace DynTech.IdentityServer.Controllers
             _urlEncoder = urlEncoder;
         }
 
+        /// <summary>
+        /// Gets or sets the status message.
+        /// </summary>
+        /// <value>The status message.</value>
         [TempData]
         public string StatusMessage { get; set; }
 
+        /// <summary>
+        /// Index this instance.
+        /// </summary>
+        /// <returns>The index.</returns>
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -68,6 +84,11 @@ namespace DynTech.IdentityServer.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Index the specified model.
+        /// </summary>
+        /// <returns>The index.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(IndexViewModel model)
@@ -107,6 +128,11 @@ namespace DynTech.IdentityServer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Sends the verification email.
+        /// </summary>
+        /// <returns>The verification email.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendVerificationEmail(IndexViewModel model)
@@ -131,6 +157,10 @@ namespace DynTech.IdentityServer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Changes the password.
+        /// </summary>
+        /// <returns>The password.</returns>
         [HttpGet]
         public async Task<IActionResult> ChangePassword()
         {
@@ -150,6 +180,11 @@ namespace DynTech.IdentityServer.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Changes the password.
+        /// </summary>
+        /// <returns>The password.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -179,6 +214,10 @@ namespace DynTech.IdentityServer.Controllers
             return RedirectToAction(nameof(ChangePassword));
         }
 
+        /// <summary>
+        /// Sets the password.
+        /// </summary>
+        /// <returns>The password.</returns>
         [HttpGet]
         public async Task<IActionResult> SetPassword()
         {
@@ -199,6 +238,11 @@ namespace DynTech.IdentityServer.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Sets the password.
+        /// </summary>
+        /// <returns>The password.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
@@ -227,6 +271,10 @@ namespace DynTech.IdentityServer.Controllers
             return RedirectToAction(nameof(SetPassword));
         }
 
+        /// <summary>
+        /// Externals the logins.
+        /// </summary>
+        /// <returns>The logins.</returns>
         [HttpGet]
         public async Task<IActionResult> ExternalLogins()
         {
@@ -246,6 +294,11 @@ namespace DynTech.IdentityServer.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Links the login.
+        /// </summary>
+        /// <returns>The login.</returns>
+        /// <param name="provider">Provider.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LinkLogin(string provider)
@@ -259,6 +312,10 @@ namespace DynTech.IdentityServer.Controllers
             return new ChallengeResult(provider, properties);
         }
 
+        /// <summary>
+        /// Links the login callback.
+        /// </summary>
+        /// <returns>The login callback.</returns>
         [HttpGet]
         public async Task<IActionResult> LinkLoginCallback()
         {
@@ -287,6 +344,11 @@ namespace DynTech.IdentityServer.Controllers
             return RedirectToAction(nameof(ExternalLogins));
         }
 
+        /// <summary>
+        /// Removes the login.
+        /// </summary>
+        /// <returns>The login.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveLogin(RemoveLoginViewModel model)
@@ -308,6 +370,10 @@ namespace DynTech.IdentityServer.Controllers
             return RedirectToAction(nameof(ExternalLogins));
         }
 
+        /// <summary>
+        /// Twos the factor authentication.
+        /// </summary>
+        /// <returns>The factor authentication.</returns>
         [HttpGet]
         public async Task<IActionResult> TwoFactorAuthentication()
         {
@@ -327,6 +393,10 @@ namespace DynTech.IdentityServer.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Disable2fas the warning.
+        /// </summary>
+        /// <returns>The warning.</returns>
         [HttpGet]
         public async Task<IActionResult> Disable2faWarning()
         {
@@ -344,6 +414,10 @@ namespace DynTech.IdentityServer.Controllers
             return View(nameof(Disable2fa));
         }
 
+        /// <summary>
+        /// Disable2fa this instance.
+        /// </summary>
+        /// <returns>The disable2fa.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Disable2fa()
@@ -364,6 +438,10 @@ namespace DynTech.IdentityServer.Controllers
             return RedirectToAction(nameof(TwoFactorAuthentication));
         }
 
+        /// <summary>
+        /// Enables the authenticator.
+        /// </summary>
+        /// <returns>The authenticator.</returns>
         [HttpGet]
         public async Task<IActionResult> EnableAuthenticator()
         {
@@ -389,6 +467,11 @@ namespace DynTech.IdentityServer.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Enables the authenticator.
+        /// </summary>
+        /// <returns>The authenticator.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnableAuthenticator(EnableAuthenticatorViewModel model)
@@ -421,12 +504,20 @@ namespace DynTech.IdentityServer.Controllers
             return RedirectToAction(nameof(GenerateRecoveryCodes));
         }
 
+        /// <summary>
+        /// Resets the authenticator warning.
+        /// </summary>
+        /// <returns>The authenticator warning.</returns>
         [HttpGet]
         public IActionResult ResetAuthenticatorWarning()
         {
             return View(nameof(ResetAuthenticator));
         }
 
+        /// <summary>
+        /// Resets the authenticator.
+        /// </summary>
+        /// <returns>The authenticator.</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetAuthenticator()
@@ -444,6 +535,10 @@ namespace DynTech.IdentityServer.Controllers
             return RedirectToAction(nameof(EnableAuthenticator));
         }
 
+        /// <summary>
+        /// Generates the recovery codes.
+        /// </summary>
+        /// <returns>The recovery codes.</returns>
         [HttpGet]
         public async Task<IActionResult> GenerateRecoveryCodes()
         {

@@ -8,11 +8,21 @@ using DynTech.IdentityServer.Services;
 
 namespace DynTech.IdentityServer.Controllers
 {
+    /// <summary>
+    /// Consent controller.
+    /// </summary>
     public class ConsentController : Controller
     {
         private readonly ILogger<ConsentController> _logger;
         private readonly ConsentService _consent;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Controllers.ConsentController"/> class.
+        /// </summary>
+        /// <param name="logger">Logger.</param>
+        /// <param name="interaction">Interaction.</param>
+        /// <param name="clientStore">Client store.</param>
+        /// <param name="resourceStore">Resource store.</param>
         public ConsentController(
             ILogger<ConsentController> logger,
             IIdentityServerInteractionService interaction,

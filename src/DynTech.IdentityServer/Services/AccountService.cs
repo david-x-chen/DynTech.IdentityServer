@@ -40,6 +40,11 @@ namespace DynTech.IdentityServer.Services
             _clientStore = clientStore;
         }
 
+        /// <summary>
+        /// Builds the logout view model async.
+        /// </summary>
+        /// <returns>The logout view model async.</returns>
+        /// <param name="logoutId">Logout identifier.</param>
         public async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)
         {
             var vm = new LogoutViewModel { LogoutId = logoutId, ShowLogoutPrompt = AccountOptions.ShowLogoutPrompt };
@@ -65,6 +70,11 @@ namespace DynTech.IdentityServer.Services
             return vm;
         }
 
+        /// <summary>
+        /// Builds the logged out view model async.
+        /// </summary>
+        /// <returns>The logged out view model async.</returns>
+        /// <param name="logoutId">Logout identifier.</param>
         public async Task<LoggedOutViewModel> BuildLoggedOutViewModelAsync(string logoutId)
         {
             // get context information (client name, post logout redirect URI and iframe for federated signout)

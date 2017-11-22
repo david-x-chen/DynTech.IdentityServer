@@ -4,8 +4,15 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DynTech.IdentityServer.Attributes
 {
+    /// <summary>
+    /// Security headers attribute.
+    /// </summary>
     public class SecurityHeadersAttribute : ActionFilterAttribute
     {
+        /// <summary>
+        /// Ons the result executing.
+        /// </summary>
+        /// <param name="context">Context.</param>
         public override void OnResultExecuting(ResultExecutingContext context)
         {
             var result = context.Result;

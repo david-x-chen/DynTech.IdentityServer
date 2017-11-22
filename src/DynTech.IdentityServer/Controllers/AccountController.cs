@@ -1,28 +1,24 @@
-﻿using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.MongoDB;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using DynTech.IdentityServer.Services;
 using DynTech.IdentityServer.Models.AccountViewModels;
-using System.Collections.Generic;
-using IdentityModel;
 using DynTech.IdentityServer.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
-using IdentityServer4.Events;
-using IdentityServer4.Extensions;
 using System;
 using DynTech.IdentityServer.Extensions;
 
 namespace DynTech.IdentityServer.Controllers
 {
+    /// <summary>
+    /// Account controller.
+    /// </summary>
     [Authorize]
     [Route("[controller]/[action]")]
     public class AccountController : Controller
@@ -35,6 +31,17 @@ namespace DynTech.IdentityServer.Controllers
         private readonly IIdentityServerInteractionService _interaction;
         private readonly AccountService _account;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Controllers.AccountController"/> class.
+        /// </summary>
+        /// <param name="userManager">User manager.</param>
+        /// <param name="signInManager">Sign in manager.</param>
+        /// <param name="emailSender">Email sender.</param>
+        /// <param name="logger">Logger.</param>
+        /// <param name="interaction">Interaction.</param>
+        /// <param name="clientStore">Client store.</param>
+        /// <param name="httpContextAccessor">Http context accessor.</param>
+        /// <param name="schemeProvider">Scheme provider.</param>
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -55,9 +62,18 @@ namespace DynTech.IdentityServer.Controllers
             _account = new AccountService(interaction, httpContextAccessor, schemeProvider, clientStore);
         }
 
+        /// <summary>
+        /// Gets or sets the error message.
+        /// </summary>
+        /// <value>The error message.</value>
         [TempData]
         public string ErrorMessage { get; set; }
 
+        /// <summary>
+        /// Login the specified returnUrl.
+        /// </summary>
+        /// <returns>The login.</returns>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Login(string returnUrl = null)
@@ -69,6 +85,12 @@ namespace DynTech.IdentityServer.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Login the specified model and returnUrl.
+        /// </summary>
+        /// <returns>The login.</returns>
+        /// <param name="model">Model.</param>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -105,6 +127,12 @@ namespace DynTech.IdentityServer.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Logins the with2fa.
+        /// </summary>
+        /// <returns>The with2fa.</returns>
+        /// <param name="rememberMe">If set to <c>true</c> remember me.</param>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> LoginWith2fa(bool rememberMe, string returnUrl = null)
@@ -123,6 +151,13 @@ namespace DynTech.IdentityServer.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Logins the with2fa.
+        /// </summary>
+        /// <returns>The with2fa.</returns>
+        /// <param name="model">Model.</param>
+        /// <param name="rememberMe">If set to <c>true</c> remember me.</param>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -161,6 +196,11 @@ namespace DynTech.IdentityServer.Controllers
             }
         }
 
+        /// <summary>
+        /// Logins the with recovery code.
+        /// </summary>
+        /// <returns>The with recovery code.</returns>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> LoginWithRecoveryCode(string returnUrl = null)
@@ -177,6 +217,12 @@ namespace DynTech.IdentityServer.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Logins the with recovery code.
+        /// </summary>
+        /// <returns>The with recovery code.</returns>
+        /// <param name="model">Model.</param>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -215,6 +261,10 @@ namespace DynTech.IdentityServer.Controllers
             }
         }
 
+        /// <summary>
+        /// Lockout this instance.
+        /// </summary>
+        /// <returns>The lockout.</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Lockout()
@@ -222,6 +272,11 @@ namespace DynTech.IdentityServer.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Register the specified returnUrl.
+        /// </summary>
+        /// <returns>The register.</returns>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
@@ -230,6 +285,12 @@ namespace DynTech.IdentityServer.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Register the specified model and returnUrl.
+        /// </summary>
+        /// <returns>The register.</returns>
+        /// <param name="model">Model.</param>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -259,6 +320,11 @@ namespace DynTech.IdentityServer.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Logout the specified logoutId.
+        /// </summary>
+        /// <returns>The logout.</returns>
+        /// <param name="logoutId">Logout identifier.</param>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> Logout(string logoutId)
@@ -276,6 +342,11 @@ namespace DynTech.IdentityServer.Controllers
             return View(vm);
         }
 
+        /// <summary>
+        /// Logout the specified model.
+        /// </summary>
+        /// <returns>The logout.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -302,6 +373,12 @@ namespace DynTech.IdentityServer.Controllers
             return View("LoggedOut", vm);
         }
 
+        /// <summary>
+        /// Externals the login.
+        /// </summary>
+        /// <returns>The login.</returns>
+        /// <param name="provider">Provider.</param>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -313,6 +390,12 @@ namespace DynTech.IdentityServer.Controllers
             return Challenge(properties, provider);
         }
 
+        /// <summary>
+        /// Externals the login callback.
+        /// </summary>
+        /// <returns>The login callback.</returns>
+        /// <param name="returnUrl">Return URL.</param>
+        /// <param name="remoteError">Remote error.</param>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
@@ -349,6 +432,12 @@ namespace DynTech.IdentityServer.Controllers
             }
         }
 
+        /// <summary>
+        /// Externals the login confirmation.
+        /// </summary>
+        /// <returns>The login confirmation.</returns>
+        /// <param name="model">Model.</param>
+        /// <param name="returnUrl">Return URL.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -381,6 +470,12 @@ namespace DynTech.IdentityServer.Controllers
             return View(nameof(ExternalLogin), model);
         }
 
+        /// <summary>
+        /// Confirms the email.
+        /// </summary>
+        /// <returns>The email.</returns>
+        /// <param name="userId">User identifier.</param>
+        /// <param name="code">Code.</param>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
@@ -398,6 +493,10 @@ namespace DynTech.IdentityServer.Controllers
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
+        /// <summary>
+        /// Forgots the password.
+        /// </summary>
+        /// <returns>The password.</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPassword()
@@ -405,6 +504,11 @@ namespace DynTech.IdentityServer.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Forgots the password.
+        /// </summary>
+        /// <returns>The password.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -432,6 +536,10 @@ namespace DynTech.IdentityServer.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Forgots the password confirmation.
+        /// </summary>
+        /// <returns>The password confirmation.</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPasswordConfirmation()
@@ -439,6 +547,11 @@ namespace DynTech.IdentityServer.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Resets the password.
+        /// </summary>
+        /// <returns>The password.</returns>
+        /// <param name="code">Code.</param>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPassword(string code = null)
@@ -451,6 +564,11 @@ namespace DynTech.IdentityServer.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Resets the password.
+        /// </summary>
+        /// <returns>The password.</returns>
+        /// <param name="model">Model.</param>
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -475,6 +593,10 @@ namespace DynTech.IdentityServer.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Resets the password confirmation.
+        /// </summary>
+        /// <returns>The password confirmation.</returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()
@@ -482,7 +604,10 @@ namespace DynTech.IdentityServer.Controllers
             return View();
         }
 
-
+        /// <summary>
+        /// Accesses the denied.
+        /// </summary>
+        /// <returns>The denied.</returns>
         [HttpGet]
         public IActionResult AccessDenied()
         {

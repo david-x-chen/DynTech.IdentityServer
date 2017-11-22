@@ -4,12 +4,14 @@ using IdentityServer4.Stores;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
-using System;
 using DynTech.IdentityServer.Models.Consent;
 using IdentityServer4;
 
 namespace DynTech.IdentityServer.Services
 {
+    /// <summary>
+    /// Consent service.
+    /// </summary>
     public class ConsentService
     {
         private readonly IClientStore _clientStore;
@@ -17,6 +19,13 @@ namespace DynTech.IdentityServer.Services
         private readonly IIdentityServerInteractionService _interaction;
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Services.ConsentService"/> class.
+        /// </summary>
+        /// <param name="interaction">Interaction.</param>
+        /// <param name="clientStore">Client store.</param>
+        /// <param name="resourceStore">Resource store.</param>
+        /// <param name="logger">Logger.</param>
         public ConsentService(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
@@ -29,6 +38,11 @@ namespace DynTech.IdentityServer.Services
             _logger = logger;
         }
 
+        /// <summary>
+        /// Processes the consent.
+        /// </summary>
+        /// <returns>The consent.</returns>
+        /// <param name="model">Model.</param>
         public async Task<ProcessConsentResult> ProcessConsent(ConsentInputModel model)
         {
             var result = new ProcessConsentResult();
@@ -89,6 +103,12 @@ namespace DynTech.IdentityServer.Services
             return result;
         }
 
+        /// <summary>
+        /// Builds the view model async.
+        /// </summary>
+        /// <returns>The view model async.</returns>
+        /// <param name="returnUrl">Return URL.</param>
+        /// <param name="model">Model.</param>
         public async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, ConsentInputModel model = null)
         {
             var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
@@ -148,6 +168,12 @@ namespace DynTech.IdentityServer.Services
             return vm;
         }
 
+        /// <summary>
+        /// Creates the scope view model.
+        /// </summary>
+        /// <returns>The scope view model.</returns>
+        /// <param name="identity">Identity.</param>
+        /// <param name="check">If set to <c>true</c> check.</param>
         public ScopeViewModel CreateScopeViewModel(IdentityResource identity, bool check)
         {
             return new ScopeViewModel
@@ -161,6 +187,12 @@ namespace DynTech.IdentityServer.Services
             };
         }
 
+        /// <summary>
+        /// Creates the scope view model.
+        /// </summary>
+        /// <returns>The scope view model.</returns>
+        /// <param name="scope">Scope.</param>
+        /// <param name="check">If set to <c>true</c> check.</param>
         public ScopeViewModel CreateScopeViewModel(Scope scope, bool check)
         {
             return new ScopeViewModel

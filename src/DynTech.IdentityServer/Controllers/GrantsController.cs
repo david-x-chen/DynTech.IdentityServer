@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DynTech.IdentityServer.Controllers
 {
+    /// <summary>
+    /// Grants controller.
+    /// </summary>
     [SecurityHeaders]
     [IgnoreAntiforgeryToken]
     [Authorize(AuthenticationSchemes = IdentityServer4.IdentityServerConstants.DefaultCookieAuthenticationScheme)]
@@ -19,6 +22,12 @@ namespace DynTech.IdentityServer.Controllers
         private readonly IClientStore _clients;
         private readonly IResourceStore _resources;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Controllers.GrantsController"/> class.
+        /// </summary>
+        /// <param name="interaction">Interaction.</param>
+        /// <param name="clients">Clients.</param>
+        /// <param name="resources">Resources.</param>
         public GrantsController(IIdentityServerInteractionService interaction,
             IClientStore clients,
             IResourceStore resources)
