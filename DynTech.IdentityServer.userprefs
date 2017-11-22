@@ -1,5 +1,11 @@
 ﻿<Properties StartupConfiguration="{3DD47E3F-947E-4EAE-9B6A-9D4F35B40802}|Default">
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="src/DynTech.IdentityServer/Models/AccountViewModels/LoginViewModel.cs">
+    <Files>
+      <File FileName="src/DynTech.IdentityServer/Views/Account/Login.cshtml" Line="25" Column="23" />
+      <File FileName="src/DynTech.IdentityServer/Controllers/AccountController.cs" Line="77" Column="57" />
+      <File FileName="src/DynTech.IdentityServer/Models/AccountViewModels/LoginViewModel.cs" Line="39" Column="92" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

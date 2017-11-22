@@ -11,6 +11,7 @@ using DynTech.IdentityServer.Services;
 using DynTech.IdentityServer.Models.AccountViewModels;
 using System.Collections.Generic;
 using IdentityModel;
+using DynTech.IdentityServer.Models;
 
 namespace DynTech.IdentityServer.Controllers
 {
@@ -20,8 +21,8 @@ namespace DynTech.IdentityServer.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
@@ -35,8 +36,8 @@ namespace DynTech.IdentityServer.Controllers
         /// <param name="smsSender">Sms sender.</param>
         /// <param name="loggerFactory">Logger factory.</param>
         public AccountController(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory)
@@ -140,7 +141,7 @@ namespace DynTech.IdentityServer.Controllers
             {
                 var defaultClaims = new List<IdentityUserClaim>();
                 defaultClaims.Add(new IdentityUserClaim(new Claim(JwtClaimTypes.Role, "user")));
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email, Claims =  defaultClaims};
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Claims =  defaultClaims};
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -264,7 +265,7 @@ namespace DynTech.IdentityServer.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -559,7 +560,7 @@ namespace DynTech.IdentityServer.Controllers
             }
         }
 
-        private Task<IdentityUser> GetCurrentUserAsync()
+        private Task<ApplicationUser> GetCurrentUserAsync()
         {
             return _userManager.GetUserAsync(HttpContext.User);
         }

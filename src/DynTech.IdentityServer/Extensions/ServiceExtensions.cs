@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.MongoDB;
 using IdentityServer4.Services;
 using DynTech.IdentityServer.Services;
 using Microsoft.AspNetCore.Identity;
+using DynTech.IdentityServer.Models;
 
 namespace DynTech.IdentityServer
 {
@@ -23,8 +24,12 @@ namespace DynTech.IdentityServer
         public static IServiceCollection AddIdentityServerWithMongoDB(this IServiceCollection services, IConfigurationRoot Configuration)
         {
             var mongodb = Configuration.GetSection("MongoDB");
-
+            var connectionStr = mongodb.GetValue<string>("ConnectionString") + "/" + mongodb.GetValue<string>("Database");
+            
             services.AddTransient<IProfileService, UserClaimsProfileService>();
+
+            services.AddIdentityWithMongoStoresUsingCustomTypes<ApplicationUser, IdentityRole>(connectionStr)
+                    .AddDefaultTokenProviders();
 
             services.AddIdentityServer(options =>
                 {
@@ -40,11 +45,8 @@ namespace DynTech.IdentityServer
                 .AddExtensionGrantValidator<NoSubjectExtensionGrantValidator>()
                 .AddJwtBearerClientAuthentication()
                 .AddAppAuthRedirectUriValidator()
-                .AddProfileService<UserClaimsProfileService>();
-
-            var connectionStr = mongodb.GetValue<string>("ConnectionString") + "/" + mongodb.GetValue<string>("Database");
-            services.AddIdentityWithMongoStores(connectionStr)
-                    .AddDefaultTokenProviders();
+                .AddProfileService<UserClaimsProfileService>()
+                .AddAspNetIdentity<ApplicationUser>();
 
             return services;
         }

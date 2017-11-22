@@ -32,7 +32,7 @@ namespace DynTech.IdentityServer.Models.AccountViewModels
         /// Gets the visible external providers.
         /// </summary>
         /// <value>The visible external providers.</value>
-        public IEnumerable<ExternalProvider> VisibleExternalProviders => ExternalProviders.Where(x => !string.IsNullOrWhiteSpace(x.DisplayName));
+        public IEnumerable<ExternalProvider> VisibleExternalProviders => ExternalProviders?.Where(x => !string.IsNullOrWhiteSpace(x.DisplayName));
 
         /// <summary>
         /// Gets a value indicating whether this
