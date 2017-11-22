@@ -8,7 +8,7 @@ namespace DynTech.IdentityServer.Services
     /// <summary>
     /// Auth message sender.
     /// </summary>
-    public class AuthMessageSender : IEmailSender, ISmsSender
+    public class AuthMessageSender : IEmailSender
     {
         /// <summary>
         /// Sends the email async.
@@ -20,18 +20,6 @@ namespace DynTech.IdentityServer.Services
         public Task SendEmailAsync(string email, string subject, string message)
         {
             // Plug in your email service here to send an email.
-            return Task.FromResult(0);
-        }
-
-        /// <summary>
-        /// Sends the sms async.
-        /// </summary>
-        /// <returns>The sms async.</returns>
-        /// <param name="number">Number.</param>
-        /// <param name="message">Message.</param>
-        public Task SendSmsAsync(string number, string message)
-        {
-            // Plug in your SMS service here to send a text message.
             return Task.FromResult(0);
         }
     }

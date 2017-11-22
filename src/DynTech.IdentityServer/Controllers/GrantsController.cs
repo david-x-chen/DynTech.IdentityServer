@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DynTech.IdentityServer.Controllers
 {
     [SecurityHeaders]
+    [IgnoreAntiforgeryToken]
     [Authorize(AuthenticationSchemes = IdentityServer4.IdentityServerConstants.DefaultCookieAuthenticationScheme)]
     public class GrantsController : Controller
     {

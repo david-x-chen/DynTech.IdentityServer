@@ -7,6 +7,7 @@ using IdentityServer4.Services;
 using DynTech.IdentityServer.Services;
 using Microsoft.AspNetCore.Identity;
 using DynTech.IdentityServer.Models;
+using System;
 
 namespace DynTech.IdentityServer
 {
@@ -36,11 +37,12 @@ namespace DynTech.IdentityServer
                     options.Events.RaiseSuccessEvents = true;
                     options.Events.RaiseFailureEvents = true;
                     options.Events.RaiseErrorEvents = true;
+                    options.Authentication.CookieLifetime = new TimeSpan(24, 0, 0);
+                    options.Authentication.CookieSlidingExpiration = false;
                 })
                 .AddConfigurationStore(mongodb)
                 .AddOperationalStore(mongodb)
-                .AddDeveloperSigningCredential()
-                .AddDeveloperSigningCredential()
+                .AddDeveloperSigningCredential(false)
                 .AddExtensionGrantValidator<ExtensionGrantValidator>()
                 .AddExtensionGrantValidator<NoSubjectExtensionGrantValidator>()
                 .AddJwtBearerClientAuthentication()
@@ -64,7 +66,6 @@ namespace DynTech.IdentityServer
 
             var authSection = Configuration.GetSection("Authentication");
 
-
             services.AddAuthentication()
                 .AddGoogle("Google", options =>
                 {
@@ -72,6 +73,11 @@ namespace DynTech.IdentityServer
 
                     options.ClientId = authSection.GetSection("Google").GetValue<string>("clientId");
                     options.ClientSecret = authSection.GetSection("Google").GetValue<string>("clientSecret");
+                })
+                .AddCookie("MyCookie", options =>
+                {
+                    options.LoginPath = "/Account/Unauthorized/";
+                    options.AccessDeniedPath = "/Account/Forbidden/";
                 });
             /*
                 .AddOpenIdConnect("demoidsrv", "IdentityServer", options =>

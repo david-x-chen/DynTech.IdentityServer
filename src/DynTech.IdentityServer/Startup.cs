@@ -56,7 +56,6 @@ namespace DynTech.IdentityServer
             });
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
 
             // add CORS policy for non-IdentityServer endpoints
             services.AddCors(options =>
@@ -93,7 +92,6 @@ namespace DynTech.IdentityServer
             }
 
             app.UseCors("api");
-            app.UseAuthentication();
             app.UseIdentityServer();
 
             // Setup Databases

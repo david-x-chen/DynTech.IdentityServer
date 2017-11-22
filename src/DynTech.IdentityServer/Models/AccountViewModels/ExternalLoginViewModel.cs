@@ -2,7 +2,7 @@
 
 namespace DynTech.IdentityServer.Models.AccountViewModels
 {
-    public class ExternalLoginConfirmationViewModel
+    public class ExternalLoginViewModel
     {
         [Required]
         [EmailAddress]
