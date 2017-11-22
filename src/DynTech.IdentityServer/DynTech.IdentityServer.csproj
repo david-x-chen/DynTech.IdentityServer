@@ -11,9 +11,8 @@
     <RuntimeFrameworkVersion>2.0.3</RuntimeFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
-    <None Update="wwwroot\**\*">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </None>
+    <Content Update="wwwroot\**\*.ts;wwwroot\**\*.less;wwwroot\**\*.js;wwwroot\**\*.css" CopyToPublishDirectory="Never" />
+    <Content Update="wwwroot\**\*.min.js;wwwroot\**\*.min.css" CopyToPublishDirectory="Always" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.0.1" />
@@ -46,12 +45,9 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Data\Migrations\00000000000000_CreateIdentitySchema.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Microsoft.AspNetCore.Identity.MongoDB\Microsoft.AspNetCore.Identity.MongoDB.csproj" />
   </ItemGroup>
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
-    <Exec Command="dotnet bundle" />
+    <!--<Exec Command="dotnet bundle" />-->
   </Target>
 </Project>
