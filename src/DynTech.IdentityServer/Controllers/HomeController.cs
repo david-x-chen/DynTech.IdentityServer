@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using DynTech.IdentityServer.Models;
+using Microsoft.AspNetCore.Http;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using IdentityServer4.Models;
 
 namespace DynTech.IdentityServer.Controllers
 {
@@ -12,14 +16,18 @@ namespace DynTech.IdentityServer.Controllers
     public class HomeController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Controllers.HomeController"/> class.
         /// </summary>
         /// <param name="interaction">Interaction.</param>
-        public HomeController(IIdentityServerInteractionService interaction)
+        /// <param name="httpContextAccessor">Http context accessor.</param>
+        public HomeController(IIdentityServerInteractionService interaction,
+            IHttpContextAccessor httpContextAccessor)
         {
             _interaction = interaction;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -63,14 +71,24 @@ namespace DynTech.IdentityServer.Controllers
         [Route("Home/Error")]
         public async Task<IActionResult> Error([FromQuery]string errorId)
         {
+            var errMsg = new ErrorMessage();
             var vm = new ErrorViewModel();
 
             // retrieve error details from identityserver
             var message = await _interaction.GetErrorContextAsync(errorId);
             if (message != null)
             {
-                vm.Error = message;
+                errMsg = message;
             }
+
+            var context = _httpContextAccessor.HttpContext;
+            var ex = context.Features.Get<IExceptionHandlerFeature>();
+            if (ex != null)
+            {
+                errMsg.Error += $"<br /><h1>Error: {ex.Error.Message}</h1>{ex.Error.StackTrace }";
+            }
+
+            vm.Error = errMsg;
 
             return View("Error", vm);
         }

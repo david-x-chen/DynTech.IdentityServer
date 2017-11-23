@@ -354,7 +354,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 		{
 			if (_disposed)
 			{
-				throw new ObjectDisposedException(GetType().Name);
+				//throw new ObjectDisposedException(GetType().Name);
 			}
 		}
     }

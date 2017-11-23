@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using DynTech.IdentityServer.Services;
 using DynTech.IdentityServer.Data.Seeding;
 using IdentityServer4.MongoDB.Interfaces;
+using Serilog;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace DynTech.IdentityServer
 {
@@ -14,29 +16,19 @@ namespace DynTech.IdentityServer
     /// </summary>
     public class Startup
     {
-        IHostingEnvironment _hostingEnv;
-
         /// <summary>
-        /// 
+        /// Start up
         /// </summary>
-        /// <param name="env"></param>
-        public Startup(IHostingEnvironment env)
+        /// <param name="configuration">configuration</param>
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
-
-            _hostingEnv = env;
+            Configuration = configuration;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         /// <summary>
@@ -45,8 +37,6 @@ namespace DynTech.IdentityServer
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging();
-
             services.AddIdentityServerWithMongoDB(Configuration);
 
             services.AddExternalIdentityProviders(Configuration);
@@ -74,12 +64,8 @@ namespace DynTech.IdentityServer
         /// <param name="app"></param>
         /// <param name="env"></param>
         /// <param name="applicationLifetime"></param>
-        /// <param name="loggerFactory"></param>
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -90,6 +76,11 @@ namespace DynTech.IdentityServer
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseCors("api");
             app.UseIdentityServer();

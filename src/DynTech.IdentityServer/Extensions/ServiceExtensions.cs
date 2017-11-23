@@ -8,6 +8,8 @@ using DynTech.IdentityServer.Services;
 using Microsoft.AspNetCore.Identity;
 using DynTech.IdentityServer.Models;
 using System;
+using Serilog;
+using System.Linq;
 
 namespace DynTech.IdentityServer
 {
@@ -22,7 +24,7 @@ namespace DynTech.IdentityServer
         /// <returns>The identity server with mongo db.</returns>
         /// <param name="services">Services.</param>
         /// <param name="Configuration">Configuration.</param>
-        public static IServiceCollection AddIdentityServerWithMongoDB(this IServiceCollection services, IConfigurationRoot Configuration)
+        public static IServiceCollection AddIdentityServerWithMongoDB(this IServiceCollection services, IConfiguration Configuration)
         {
             var mongodb = Configuration.GetSection("MongoDB");
             var connectionStr = mongodb.GetValue<string>("ConnectionString") + "/" + mongodb.GetValue<string>("Database");
@@ -59,7 +61,7 @@ namespace DynTech.IdentityServer
         /// <returns>The external identity providers.</returns>
         /// <param name="services">Services.</param>
         /// <param name="Configuration">Configuration.</param>
-        public static IServiceCollection AddExternalIdentityProviders(this IServiceCollection services, IConfigurationRoot Configuration)
+        public static IServiceCollection AddExternalIdentityProviders(this IServiceCollection services, IConfiguration Configuration)
         {
             // configures the OpenIdConnect handlers to persist the state parameter into the server-side IDistributedCache.
             // services.AddOidcStateDataFormatterCache("aad", "demoidsrv");

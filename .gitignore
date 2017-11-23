@@ -193,3 +193,4 @@ ModelManifest.xml
 *.template.json
 .vs/
 .vscode/
+logs/
