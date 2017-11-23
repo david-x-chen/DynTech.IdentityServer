@@ -15,3 +15,6 @@ dotnet ef Database update -c ConfigurationDbContext
 # set google api client id & secret (see msa-profile-google.json)
 dotnet user-secrets set Authentication:Google:ClientID <client_id>
 dotnet user-secrets set Authentication:Google:ClientSecret <client-secret>
+
+# Deployed
+sudo systemctl restart kestrel-identityserver4.service
