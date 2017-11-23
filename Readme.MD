@@ -16,5 +16,6 @@ dotnet ef Database update -c ConfigurationDbContext
 dotnet user-secrets set Authentication:Google:ClientID <client_id>
 dotnet user-secrets set Authentication:Google:ClientSecret <client-secret>
 
-# Deployed
+# Deployed with nginx
+https://docs.microsoft.com/en-us/aspnet/core/publishing/linuxproduction?tabs=aspnetcore2x
 sudo systemctl restart kestrel-identityserver4.service
