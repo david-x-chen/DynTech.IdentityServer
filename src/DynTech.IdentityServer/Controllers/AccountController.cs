@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
 using System;
 using DynTech.IdentityServer.Extensions;
+using Microsoft.AspNetCore.Identity.MongoDB;
+using System.Linq;
 
 namespace DynTech.IdentityServer.Controllers
 {
@@ -23,6 +25,7 @@ namespace DynTech.IdentityServer.Controllers
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
@@ -42,6 +45,7 @@ namespace DynTech.IdentityServer.Controllers
         /// <param name="clientStore">Client store.</param>
         /// <param name="httpContextAccessor">Http context accessor.</param>
         /// <param name="schemeProvider">Scheme provider.</param>
+        /// <param name="roleManager">role Manager.</param>
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -50,9 +54,11 @@ namespace DynTech.IdentityServer.Controllers
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IHttpContextAccessor httpContextAccessor,
-            IAuthenticationSchemeProvider schemeProvider
+            IAuthenticationSchemeProvider schemeProvider,
+            RoleManager<IdentityRole> roleManager
         )
         {
+            _roleManager = roleManager;
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
@@ -299,10 +305,15 @@ namespace DynTech.IdentityServer.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
+                var userRole = await _roleManager.FindByNameAsync("SiteUser");
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                user.AddRole(userRole.NormalizedName);
+                
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
-                {
+                { 
+                    await _userManager.AddClaimsAsync(user, userRole.Claims.Select(c => c.ToSecurityClaim()));
+                    
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

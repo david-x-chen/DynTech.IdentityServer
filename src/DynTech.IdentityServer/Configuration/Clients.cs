@@ -13,8 +13,8 @@ namespace DynTech.IdentityServer.Configuration
         // clients want to access resources (aka scopes)
         public static IEnumerable<Client> Get()
         {
-            var updateClientUrl = "https://update.magicsoft-asia.com";
-            var smartCMSUrl = "https://smartcms.medicare-asia.com";
+            var updateClientUrl = "https://update.fake.com";
+            var smartCMSUrl = "https://smartcms.fake.com";
 
             // client credentials client
             return new List<Client>

@@ -10,6 +10,7 @@ using DynTech.IdentityServer.Models;
 using System;
 using Serilog;
 using System.Linq;
+using DynTech.IdentityServer.Data;
 
 namespace DynTech.IdentityServer
 {
@@ -65,6 +66,14 @@ namespace DynTech.IdentityServer
         {
             // configures the OpenIdConnect handlers to persist the state parameter into the server-side IDistributedCache.
             // services.AddOidcStateDataFormatterCache("aad", "demoidsrv");
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("View Users",
+                                  policy => policy.RequireClaim(CustomClaimTypes.Permission, "users.view"));
+                options.AddPolicy("View Clients",
+                                  policy => policy.RequireClaim(CustomClaimTypes.Permission, "clients.view"));
+            });
 
             var authSection = Configuration.GetSection("Authentication");
 

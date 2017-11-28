@@ -1,0 +1,67 @@
+﻿@using DynTech.IdentityServer.Models.ClientViewModels
+@using IdentityServer4.Models
+@model ClientViewModel
+@{
+    var title = "";
+    if(!string.IsNullOrEmpty(Model.ClientId)) 
+    { 
+        title = Model.ClientName; 
+    }
+    else
+    {
+        title = "New";
+    }
+
+    ViewData["Title"] = string.Format("Client Detail - {0}", title);
+}
+<div class="grants">
+    <div class="row page-header">
+        <div class="col-md-10">
+            <h1>
+               @ViewData["Title"]
+            </h1>
+            <div></div>
+        </div>
+    </div>
+</div>        
+<div class="row">
+    <div class="col-md-10">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ClientId"></label>
+                @if(!string.IsNullOrEmpty(Model.ClientId)) 
+                { 
+                    <input asp-for="ClientId" class="form-control" readonly />
+                }
+                else
+                {
+                    <input asp-for="ClientId" class="form-control" />
+                    <span asp-validation-for="ClientId" class="text-danger"></span>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="ClientName"></label>
+                <input asp-for="ClientName" class="form-control" />
+                <span asp-validation-for="ClientName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClientSecret"></label>
+                <input asp-for="ClientSecret" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="RedirectUris"></label>
+                <textarea asp-for="RedirectUrisString" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label asp-for="PostLogoutRedirectUris"></label>
+                <textarea asp-for="PostLogoutRedirectUrisString" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label asp-for="AllowedCorsOrigins"></label>
+                <textarea asp-for="AllowedCorsOriginsString" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-default">Save</button>
+        </form>
+    </div>
+</div>

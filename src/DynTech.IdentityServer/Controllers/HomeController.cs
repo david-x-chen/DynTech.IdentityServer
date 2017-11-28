@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Http;
 using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using IdentityServer4.Models;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Linq;
 
 namespace DynTech.IdentityServer.Controllers
 {

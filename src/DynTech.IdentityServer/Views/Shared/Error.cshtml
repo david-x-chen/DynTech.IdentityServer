@@ -3,6 +3,8 @@
 @{
     var error = Model?.Error?.Error;
     var request_id = Model?.Error?.RequestId;
+
+    ViewData["Title"] = "Errors";
 }
 
 <div class="error-page">
@@ -11,7 +13,7 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-12">
             <div class="alert alert-danger">
                 Sorry, there was an error
 
@@ -29,6 +31,11 @@
             {
                 <div class="request-id">Request Id: @request_id</div>
             }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
         </div>
     </div>
 </div>

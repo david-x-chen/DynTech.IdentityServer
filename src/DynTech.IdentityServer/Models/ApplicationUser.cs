@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.MongoDB;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.MongoDB;
+using MongoDB.Bson;
 
 namespace DynTech.IdentityServer.Models
 {
@@ -20,5 +22,29 @@ namespace DynTech.IdentityServer.Models
         /// </summary>
         /// <value>The update API roles.</value>
         public string ApiRoles { get; set; }
+
+        /// <summary>
+        /// Gets or sets the clients.
+        /// </summary>
+        /// <value>The clients.</value>
+        public List<string> Clients { get; set; }
+
+        /// <summary>
+        /// Adds the client.
+        /// </summary>
+        /// <param name="clientId">Client identifier.</param>
+        public virtual void AddClient(string clientId)
+        {
+            Clients.Add(clientId);
+        }
+
+        /// <summary>
+        /// Removes the claim.
+        /// </summary>
+        /// <param name="clientId">Client identifier.</param>
+        public virtual void RemoveClient(string clientId)
+        {
+            Clients.RemoveAll(c => c == clientId);
+        }
     }
 }

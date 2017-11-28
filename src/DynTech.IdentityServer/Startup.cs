@@ -8,6 +8,7 @@ using DynTech.IdentityServer.Data.Seeding;
 using IdentityServer4.MongoDB.Interfaces;
 using Serilog;
 using Microsoft.AspNetCore.HttpOverrides;
+using System.Threading.Tasks;
 
 namespace DynTech.IdentityServer
 {
@@ -88,7 +89,7 @@ namespace DynTech.IdentityServer
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                SeedMongoDBData.EnsureSeedData(serviceScope.ServiceProvider.GetService<IConfigurationDbContext>());
+                Task.Run(() => new SeedMongoDBData().Seeding(serviceScope));
             }
 
             app.UseIdentityServerMongoDBTokenCleanup(applicationLifetime);

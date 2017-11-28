@@ -17,10 +17,10 @@ namespace DynTech.IdentityServer.Configuration
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
                 new IdentityResources.Email(),
+                new IdentityResources.Phone(),
 
                 // custom identity resource with some consolidated claims
-                new IdentityResource("updateapiscope",new []{ "role", "admin", "user", "updateApi", "updateApi.admin" , "updateApi.user" } ),
-                new IdentityResource("chasapiscope",new []{ "role", "admin", "user", "chasApi", "chasApi.admin", "chasApi.user"} )
+                new IdentityResource("apiscope",new []{ "role", "admin", "user", "api", "api.admin" , "api.user" } )
             };
         }
 
@@ -30,37 +30,21 @@ namespace DynTech.IdentityServer.Configuration
         {
             return new List<ApiResource>
             {
-                new ApiResource("updateApi")
+                new ApiResource("api")
                 {
                     ApiSecrets =
                     {
-                        new Secret("updateApiSecret".Sha256())
+                        new Secret("apiSecret".Sha256())
                     },
                     Scopes =
                     {
                         new Scope
                         {
-                            Name = "updateapiscope",
-                            DisplayName = "Scope for the update service"
+                            Name = "apiscope",
+                            DisplayName = "Scope for the api service"
                         }
                     },
-                    UserClaims = { "role", "admin", "user", "updateApi", "updateApi.admin", "updateApi.user" }
-                },
-                new ApiResource("chasApi")
-                {
-                    ApiSecrets =
-                    {
-                        new Secret("chasApiSecret".Sha256())
-                    },
-                    Scopes =
-                    {
-                        new Scope
-                        {
-                            Name = "chasapiscope",
-                            DisplayName = "Scope for the CHAS service"
-                        }
-                    },
-                    UserClaims = { "role", "admin", "user", "chasApi", "chasApi.admin", "chasApi.user" }
+                    UserClaims = { "role", "admin", "user", "api", "api.admin", "api.user" }
                 }
             };
         }

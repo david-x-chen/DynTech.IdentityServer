@@ -1,5 +1,14 @@
 ﻿<Properties StartupConfiguration="{3DD47E3F-947E-4EAE-9B6A-9D4F35B40802}|Default">
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="DynTech.IdentityServer Status">
+    <Files>
+      <File FileName="src/DynTech.IdentityServer/Controllers/UsersController.cs" Line="76" Column="10" />
+      <File FileName="src/DynTech.IdentityServer/Controllers/ClientsController.cs" Line="131" Column="60" />
+      <File FileName="src/DynTech.IdentityServer/Controllers/AccountController.cs" Line="295" Column="56" />
+      <File FileName="src/DynTech.IdentityServer/Controllers/HomeController.cs" Line="83" Column="14" />
+      <File FileName="src/DynTech.IdentityServer/Views/Clients/Index.cshtml" Line="23" Column="42" />
+      <File FileName="DynTech.IdentityServer Status" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
