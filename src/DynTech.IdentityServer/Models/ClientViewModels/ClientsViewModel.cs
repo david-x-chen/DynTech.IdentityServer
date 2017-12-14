@@ -125,7 +125,8 @@ namespace DynTech.IdentityServer.Models.ClientViewModels
         {
             "openid",
             "email",
-            "profile"
+            "profile",
+            "apiscope"
         };
     }
 }
