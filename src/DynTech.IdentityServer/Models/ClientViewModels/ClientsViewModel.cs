@@ -69,6 +69,13 @@ namespace DynTech.IdentityServer.Models.ClientViewModels
         public string ClientSecret { get; set; }
 
         /// <summary>
+        /// Gets or sets the type of the allowed grant.
+        /// </summary>
+        /// <value>The type of the allowed grant.</value>
+        [Display(Name = "Allowed Grant Type")]
+        public string AllowedGrantType { get; set; }
+
+        /// <summary>
         /// Gets or sets the redirect uris.
         /// </summary>
         /// <value>The redirect uris.</value>
@@ -128,5 +135,31 @@ namespace DynTech.IdentityServer.Models.ClientViewModels
             "profile",
             "apiscope"
         };
+
+        /// <summary>
+        /// Gets the default grant types.
+        /// </summary>
+        /// <value>The default grant types.</value>
+        public SelectList DefaultGrantTypes
+        {
+            get 
+            {
+                var list = new SelectList(
+                    new List<SelectListItem>
+                    {
+                    new SelectListItem { Selected = false, Text = "ClientCredentials", Value = "ClientCredentials" },
+                    new SelectListItem { Selected = true, Text = "Code", Value = "Code" },
+                    new SelectListItem { Selected = false, Text = "CodeAndClientCredentials", Value = "CodeAndClientCredentials" },
+                    new SelectListItem { Selected = false, Text = "Hybrid", Value = "Hybrid" },
+                    new SelectListItem { Selected = false, Text = "HybridAndClientCredentials", Value = "HybridAndClientCredentials" },
+                    new SelectListItem { Selected = false, Text = "Implicit", Value = "Implicit" },
+                    new SelectListItem { Selected = false, Text = "ImplicitAndClientCredentials", Value = "ImplicitAndClientCredentials" },
+                    new SelectListItem { Selected = false, Text = "ResourceOwnerPassword", Value = "ResourceOwnerPassword" },
+                    new SelectListItem { Selected = false, Text = "ResourceOwnerPasswordAndClientCredentials", Value = "ResourceOwnerPasswordAndClientCredentials" }
+                    }, "Value", "Text");
+
+                return list;
+            }
+        }
     }
 }

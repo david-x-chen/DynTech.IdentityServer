@@ -84,6 +84,19 @@ namespace DynTech.IdentityServer.Controllers
                 errMsg = message;
             }
 
+            if (string.IsNullOrEmpty(errorId))
+            {
+                var errorState = TempData["ModelState"] as List<string>;
+                if (errorState != null)
+                {
+                    foreach (var err in errorState)
+                    {
+                        System.Console.WriteLine(err);
+                        errMsg.Error += err;
+                    }
+                }
+            }
+
             var context = _httpContextAccessor.HttpContext;
             var ex = context.Features.Get<IExceptionHandlerFeature>();
             if (ex != null)

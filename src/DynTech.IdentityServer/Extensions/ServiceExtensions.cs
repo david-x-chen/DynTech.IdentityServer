@@ -11,6 +11,7 @@ using System;
 using Serilog;
 using System.Linq;
 using DynTech.IdentityServer.Data;
+using DynTech.IdentityServer.Data.Interfaces;
 
 namespace DynTech.IdentityServer
 {
@@ -27,8 +28,16 @@ namespace DynTech.IdentityServer
         /// <param name="Configuration">Configuration.</param>
         public static IServiceCollection AddIdentityServerWithMongoDB(this IServiceCollection services, IConfiguration Configuration)
         {
+            var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+            System.Console.WriteLine($"db host:{dbHost}");
+
             var mongodb = Configuration.GetSection("MongoDB");
             var connectionStr = mongodb.GetValue<string>("ConnectionString") + "/" + mongodb.GetValue<string>("Database");
+            if (!string.IsNullOrWhiteSpace(dbHost))
+            {
+                connectionStr = string.Format(connectionStr, dbHost);
+            }
+            System.Console.WriteLine($"db connection:{connectionStr}");
             
             services.AddTransient<IProfileService, UserClaimsProfileService>();
 
@@ -52,6 +61,8 @@ namespace DynTech.IdentityServer
                 .AddAppAuthRedirectUriValidator()
                 .AddProfileService<UserClaimsProfileService>()
                 .AddAspNetIdentity<ApplicationUser>();
+            
+            services.AddSingleton<IClientRepository>(new ClientRepository(connectionStr));
 
             return services;
         }

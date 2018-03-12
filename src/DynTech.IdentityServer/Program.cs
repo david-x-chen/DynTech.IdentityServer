@@ -36,6 +36,9 @@ namespace DynTech.IdentityServer
             {
                 Log.Information("Getting the motors running...");
 
+                var serverUrls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
+                System.Console.WriteLine(serverUrls);
+
                 var host = new WebHostBuilder()
                     .UseKestrel()
                     .UseContentRoot(Directory.GetCurrentDirectory())
