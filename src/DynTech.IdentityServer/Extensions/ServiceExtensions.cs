@@ -28,14 +28,23 @@ namespace DynTech.IdentityServer
         /// <param name="Configuration">Configuration.</param>
         public static IServiceCollection AddIdentityServerWithMongoDB(this IServiceCollection services, IConfiguration Configuration)
         {
-            var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
-            var dbReplica = Environment.GetEnvironmentVariable("DB_REPLICA");
+            var envVar = Environment.GetEnvironmentVariables();
+            var dbHost = envVar["DB_HOST"].ToString();
+            var dbReplica = envVar["DB_REPLICA"].ToString();
+            var dbUser = envVar["DB_USER"].ToString();
+            var dbPwd = envVar["DB_PWD"].ToString();
+
             System.Console.WriteLine($"db host:{dbHost} {dbReplica}");
 
             var mongodb = Configuration.GetSection("MongoDB");
             var connectionStr = mongodb.GetValue<string>("ConnectionString") + "/" + mongodb.GetValue<string>("Database");
             if (!string.IsNullOrEmpty(dbHost))
             {
+                if (!string.IsNullOrEmpty(dbUser) && !string.IsNullOrEmpty(dbPwd))
+                {
+                    dbHost = string.Format("{0}:{1}@{2}", dbUser, dbPwd, dbHost);
+                }
+
                 connectionStr = string.Format(connectionStr, dbHost);
             }
             if (!string.IsNullOrEmpty(dbReplica))
