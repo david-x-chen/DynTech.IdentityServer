@@ -12,6 +12,7 @@ using Serilog;
 using System.Linq;
 using DynTech.IdentityServer.Data;
 using DynTech.IdentityServer.Data.Interfaces;
+using System.Collections.Generic;
 
 namespace DynTech.IdentityServer
 {
@@ -21,23 +22,44 @@ namespace DynTech.IdentityServer
     public static class ServiceExtensions
     {
         /// <summary>
-        /// Adds the identity server with mongo db.
+        /// Build specific section
         /// </summary>
-        /// <returns>The identity server with mongo db.</returns>
-        /// <param name="services">Services.</param>
+        /// <returns>The section and connection string</returns>
         /// <param name="Configuration">Configuration.</param>
-        public static IServiceCollection AddIdentityServerWithMongoDB(this IServiceCollection services, IConfiguration Configuration)
+        public static Tuple<string, IConfigurationSection> SetConnectionSection(IConfiguration Configuration)
         {
+            // get environment variables
             var envVar = Environment.GetEnvironmentVariables();
-            var dbHost = envVar["DB_HOST"].ToString();
-            var dbReplica = envVar["DB_REPLICA"].ToString();
-            var dbUser = envVar["DB_USER"].ToString();
-            var dbPwd = envVar["DB_PWD"].ToString();
+            var dbHost = string.Empty;
+            var dbReplica = string.Empty;
+            var dbUser = string.Empty;
+            var dbPwd = string.Empty;
+
+            if (envVar["DB_HOST"] != null)
+            {
+                dbHost = envVar["DB_HOST"].ToString();
+            }
+
+            if (envVar["DB_REPLICA"] != null)
+            {
+                dbReplica = envVar["DB_REPLICA"].ToString();
+            }
+
+            if (envVar["DB_USER"] != null)
+            {
+                dbUser = envVar["DB_USER"].ToString();
+            }
+
+            if (envVar["DB_PWD"] != null)
+            {
+                dbPwd = envVar["DB_PWD"].ToString();
+            }
 
             System.Console.WriteLine($"db host:{dbHost} {dbReplica}");
 
+            // get original section from json file
             var mongodb = Configuration.GetSection("MongoDB");
-            var connectionStr = mongodb.GetValue<string>("ConnectionString") + "/" + mongodb.GetValue<string>("Database");
+            var connectionStr = mongodb.GetValue<string>("ConnectionString");
             if (!string.IsNullOrEmpty(dbHost))
             {
                 if (!string.IsNullOrEmpty(dbUser) && !string.IsNullOrEmpty(dbPwd))
@@ -52,7 +74,37 @@ namespace DynTech.IdentityServer
                 connectionStr += $"?{dbReplica}";
             }
 
+            var dict = new Dictionary<string, string>{
+                {"MongoDB:ConnectionString", connectionStr},
+                {"MongoDB:Database", mongodb.GetValue<string>("Database")}
+            };
+
+            // build a new section for mongodb
+            var builder = new ConfigurationBuilder();
+            builder.AddInMemoryCollection(dict);
+
+            Configuration = builder.Build();
+
+            connectionStr += "/" + mongodb.GetValue<string>("Database");
+
             System.Console.WriteLine($"db connection:{connectionStr}");
+
+            return new Tuple<string, IConfigurationSection>(
+                connectionStr, Configuration.GetSection("MongoDB")
+            );
+        }
+
+        /// <summary>
+        /// Adds the identity server with mongo db.
+        /// </summary>
+        /// <returns>The identity server with mongo db.</returns>
+        /// <param name="services">Services.</param>
+        /// <param name="Configuration">Configuration.</param>
+        public static IServiceCollection AddIdentityServerWithMongoDB(this IServiceCollection services, IConfiguration Configuration)
+        { 
+            var configedSections = SetConnectionSection(Configuration);
+            var connectionStr = configedSections.Item1;
+            var mongodb = configedSections.Item2;
             
             services.AddTransient<IProfileService, UserClaimsProfileService>();
 
@@ -110,6 +162,16 @@ namespace DynTech.IdentityServer
 
                     options.ClientId = authSection.GetSection("Google").GetValue<string>("clientId");
                     options.ClientSecret = authSection.GetSection("Google").GetValue<string>("clientSecret");
+                })
+                .AddTwitter(twitterOptions =>
+                {
+                    twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"];
+                    twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+                })
+                .AddMicrosoftAccount(microsoftOptions =>
+                {
+                    microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ApplicationId"];
+                    microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:Password"];
                 })
                 .AddCookie("MyCookie", options =>
                 {

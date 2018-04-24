@@ -16,6 +16,7 @@ namespace DynTech.IdentityServer.Controllers
     /// <summary>
     /// Home controller.
     /// </summary>
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
