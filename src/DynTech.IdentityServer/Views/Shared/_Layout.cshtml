@@ -1,44 +1,92 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@using IdentityServer4.Extensions
+@{
+    string classStr = string.Empty;
+    string userName = Context.User?.FindFirst("name")?.Value;
+    if (userName != null)
+    {
+        classStr = "app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show";
+    }
+    else
+    {
+        classStr = "app flex-row align-items-center";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="Identity Server">
+    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
     <title>@ViewData["Title"] - Identity Server</title>
 
-    <environment names="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
-    </environment>
-    <environment names="Staging,Production">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    </environment>
-
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous">
+    <environment names="Development,Staging,Production">
+        <!-- Icons-->
+        <link href="/vendors/css/flag-icon.min.css" rel="stylesheet">
+        <link href="/vendors/css/font-awesome.min.css" rel="stylesheet">
+        <link href="/vendors/css/simple-line-icons.css" rel="stylesheet">
+        <!-- Main styles for this application-->
+        <link href="/css/style.css" rel="stylesheet">
+        <link href="/vendors/css/pace.min.css" rel="stylesheet">
+    </environment> 
 </head>
-<body>
-    @await Html.PartialAsync("_LoginPartial")
+<body class="@classStr">
+    @if (userName != null)
+    {
+        @await Html.PartialAsync("_LoginPartial")
+    }
 
-    <div class="container body-content">
-        @RenderBody()
-        <!-- <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - Dyn Tech</p>
-        </footer> -->
+    <div class="app-body">
+        @if (userName != null)
+        {
+            @await Html.PartialAsync("_SideBarPartial")
+        }
+        <main class="main">
+
+            @if (userName != null)
+            {
+                @await Html.PartialAsync("_BreadcrumbPartial")
+            }
+
+            <div class="container-fluid">
+                <div class="animated fadeIn">
+
+                @RenderBody()
+                </div>
+            </div>
+        </main>
+        @if (userName != null)
+        {
+            @await Html.PartialAsync("_AsideMenuPartial")
+        }
     </div>
+        @if (userName != null)
+        {
+    <footer class="app-footer">
+      <div>
+        <a href="https://coreui.io">CoreUI</a>
+        <span>&copy; 2018 creativeLabs.</span>
+      </div>
+      <div class="ml-auto">
+        <span>Powered by</span>
+        <a href="https://coreui.io">CoreUI</a>
+      </div>
+    </footer>
+        }
 
-    <environment names="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    <environment names="Development,Staging,Production">
+        <!-- Bootstrap and necessary plugins-->
+        <script src="/vendors/js/jquery.min.js"></script>
+        <script src="/vendors/js/popper.min.js"></script>
+        <script src="/vendors/js/bootstrap.min.js"></script>
+        <script src="/vendors/js/pace.min.js"></script>
+        <script src="/vendors/js/perfect-scrollbar.min.js"></script>
+        <script src="/vendors/js/coreui.min.js"></script>
+        <!-- Plugins and scripts required by this view-->
+        <script src="/vendors/js/Chart.min.js"></script>
+        <script src="/vendors/js/custom-tooltips.min.js"></script>
+        <script src="/js/main.js"></script>
     </environment>
 
     @RenderSection("scripts", required: false)
