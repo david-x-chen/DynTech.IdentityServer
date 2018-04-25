@@ -12,7 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Update="wwwroot\**\*.ts;wwwroot\**\*.less;wwwroot\**\*.js;wwwroot\**\*.css;wwwroot\**\*.json;" CopyToPublishDirectory="Never" />
-    <Content Update="wwwroot\**\*.min.js;wwwroot\**\*.min.css" CopyToPublishDirectory="Always" />
+    <Content Update="wwwroot\**\*.min.js;wwwroot\**\*.min.css;wwwroot\**\*" CopyToPublishDirectory="Always" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="2.6.375" />
