@@ -8,7 +8,7 @@ using DynTech.IdentityServer.Models;
 using IdentityServer4.MongoDB.Interfaces;
 using IdentityServer4.MongoDB.Mappers;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.MongoDB;
+using MongoIdentity = Microsoft.AspNetCore.Identity.MongoDB;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
@@ -29,7 +29,7 @@ namespace DynTech.IdentityServer.Data.Seeding
                 EnsureSeedData(provider.GetService<IConfigurationDbContext>());
 
                 var userManager = provider.GetService<UserManager<ApplicationUser>>();
-                var roleManager = provider.GetService<RoleManager<IdentityRole>>();
+                var roleManager = provider.GetService<RoleManager<MongoIdentity.IdentityRole>>();
                 await EnsureSuperUser(userManager, roleManager);
         }
 
@@ -67,12 +67,12 @@ namespace DynTech.IdentityServer.Data.Seeding
         /// <summary>
         /// Ensures super user account
         /// </summary>
-        private async Task EnsureSuperUser(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        private async Task EnsureSuperUser(UserManager<ApplicationUser> userManager, RoleManager<MongoIdentity.IdentityRole> roleManager)
         {
             var adminRole = await roleManager.FindByNameAsync("SiteAdmin");
             if (adminRole == null)
             {
-                adminRole = new IdentityRole("SiteAdmin");
+                adminRole = new MongoIdentity.IdentityRole("SiteAdmin");
                 var addedRole = await roleManager.CreateAsync(adminRole);
 
                 if (addedRole.Succeeded)
@@ -87,7 +87,7 @@ namespace DynTech.IdentityServer.Data.Seeding
             var userRole = await roleManager.FindByNameAsync("SiteUser");
             if (userRole == null)
             {
-                userRole = new IdentityRole("SiteUser");
+                userRole = new MongoIdentity.IdentityRole("SiteUser");
                 var addedRole = await roleManager.CreateAsync(userRole);
 
                 if (addedRole.Succeeded)

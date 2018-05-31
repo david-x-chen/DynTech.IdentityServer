@@ -1,0 +1,10 @@
+**/docker/**/*
+**/docker/
+
+.dockerignore
+
+**/Properties/**/*
+**/Properties/
+
+
+**/*.md

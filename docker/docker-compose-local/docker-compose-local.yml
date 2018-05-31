@@ -1,0 +1,49 @@
+version: '2.2'
+
+services:
+
+  #proxy-nginx:
+  #  container_name: 'proxy-nginx'
+  #  image: davidxchen/nginx-proxy:development
+  #  depends_on:
+  #    - profile-service
+  #  ports:
+  #    - "8101:8101" #
+  #    - "8091:8091"
+  #    - "8081:8081"
+  #  volumes:
+  #    - nginx-log-volume:/var/log/nginx/ 
+  #  networks:
+  #    - profile-network
+
+  profile-service:
+    container_name: 'profile-service'
+    image: davidxchen/profile:latest  
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - DB_HOST=database
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+    networks:
+      - profile-network
+
+  database:
+    container_name: 'database'
+    hostname: database
+    image: "mongo:latest"
+    healthcheck:
+      test: ''
+    volumes:
+      - mongo-data-volume:/backup
+    networks:
+    - profile-network
+
+volumes:
+  nginx-log-volume:
+  mongo-data-volume:
+
+networks:
+  profile-network:
+    driver: bridge

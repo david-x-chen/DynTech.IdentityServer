@@ -9,6 +9,8 @@ using IdentityServer4.MongoDB.Interfaces;
 using Serilog;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Threading.Tasks;
+using App.Metrics.AspNetCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DynTech.IdentityServer
 {
@@ -42,9 +44,7 @@ namespace DynTech.IdentityServer
 
             services.AddExternalIdentityProviders(Configuration);
 
-            services.AddMvc(options => {
-                //options.Filters.Add(new RequireHttpsAttribute ());
-            });
+            services.AddMvc().AddMetrics();
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
 

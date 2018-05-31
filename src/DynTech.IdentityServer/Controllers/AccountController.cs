@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
 using System;
 using DynTech.IdentityServer.Extensions;
-using Microsoft.AspNetCore.Identity.MongoDB;
+using MongoIdentity = Microsoft.AspNetCore.Identity.MongoDB;
 using System.Linq;
 
 namespace DynTech.IdentityServer.Controllers
@@ -25,7 +25,7 @@ namespace DynTech.IdentityServer.Controllers
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<MongoIdentity.IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
@@ -55,7 +55,7 @@ namespace DynTech.IdentityServer.Controllers
             IClientStore clientStore,
             IHttpContextAccessor httpContextAccessor,
             IAuthenticationSchemeProvider schemeProvider,
-            RoleManager<IdentityRole> roleManager
+            RoleManager<MongoIdentity.IdentityRole> roleManager
         )
         {
             _roleManager = roleManager;

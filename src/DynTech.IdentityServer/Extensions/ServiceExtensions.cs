@@ -2,7 +2,7 @@ using DynTech.IdentityServer.Data.Test;
 using IdentityServer4;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Identity.MongoDB;
+using MongoIdentity = Microsoft.AspNetCore.Identity.MongoDB;
 using IdentityServer4.Services;
 using DynTech.IdentityServer.Services;
 using Microsoft.AspNetCore.Identity;
@@ -108,7 +108,7 @@ namespace DynTech.IdentityServer
             
             services.AddTransient<IProfileService, UserClaimsProfileService>();
 
-            services.AddIdentityWithMongoStoresUsingCustomTypes<ApplicationUser, IdentityRole>(connectionStr)
+            services.AddIdentityWithMongoStoresUsingCustomTypes<ApplicationUser, MongoIdentity.IdentityRole>(connectionStr)
                     .AddDefaultTokenProviders();
 
             services.AddIdentityServer(options =>

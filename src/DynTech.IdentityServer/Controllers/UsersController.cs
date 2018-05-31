@@ -7,7 +7,7 @@ using DynTech.IdentityServer.Models.UserViewModels;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.MongoDB;
+using MongoIdentity = Microsoft.AspNetCore.Identity.MongoDB;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -21,7 +21,7 @@ namespace DynTech.IdentityServer.Controllers
     public class UsersController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<MongoIdentity.IdentityRole> _roleManager;
         private readonly IClientStore _clients;
         private readonly ILogger _logger;
 
@@ -33,7 +33,7 @@ namespace DynTech.IdentityServer.Controllers
         /// <param name="logger">Logger.</param>
         /// <param name="clients">clients.</param>
         public UsersController(UserManager<ApplicationUser> userManager,
-                               RoleManager<IdentityRole> roleManager,
+                               RoleManager<MongoIdentity.IdentityRole> roleManager,
                                ILogger<UsersController> logger,
                                IClientStore clients)
         {

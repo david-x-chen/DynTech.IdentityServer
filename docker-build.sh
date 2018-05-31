@@ -6,8 +6,8 @@ USERNAME=davidxchen
 # image name
 IMAGE=profile
 
-dotnet build
+#dotnet build
 
-dotnet publish -c release -o ~/Projects/DynTech.IdentityServer/publish -f netcoreapp2.0
+#dotnet publish -c release -o ~/Projects/DynTech.IdentityServer/publish -f netcoreapp2.0
 
 docker build -t $USERNAME/$IMAGE:latest .

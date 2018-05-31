@@ -14,7 +14,7 @@ version=`cat VERSION`
 echo "version: $version"
 
 # run build
-./docker-build.sh
+#./docker-build.sh
 
 # tag it
 git add -A
