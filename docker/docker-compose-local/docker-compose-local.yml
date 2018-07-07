@@ -18,6 +18,7 @@ services:
 
   profile-service:
     container_name: 'profile-service'
+    hostname: profile
     image: davidxchen/profile:latest  
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
@@ -28,17 +29,18 @@ services:
       - database
     networks:
       - profile-network
+      - internal-network
+    links:
+      - database
 
   database:
     container_name: 'database'
     hostname: database
     image: "mongo:latest"
     healthcheck:
-      test: ''
-    volumes:
-      - mongo-data-volume:/backup
+      test: 'ping profile'
     networks:
-    - profile-network
+      - internal-network
 
 volumes:
   nginx-log-volume:
@@ -47,3 +49,4 @@ volumes:
 networks:
   profile-network:
     driver: bridge
+  internal-network:

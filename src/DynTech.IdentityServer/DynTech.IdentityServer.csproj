@@ -19,7 +19,7 @@
     <PackageReference Include="IdentityServer4" Version="2.2.0"/>
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.1.0"/>
     <PackageReference Include="IdentityServer4.Contrib.MongoDB" Version="2.0.1"/>
-    <PackageReference Include="MongoDB.Driver" Version="2.6.1"/>
+    <PackageReference Include="MongoDB.Driver" Version="2.7.0"/>
     <PackageReference Include="App.Metrics" Version="2.1.0-alpha2"/>
     <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="2.0.0"/>
   </ItemGroup>

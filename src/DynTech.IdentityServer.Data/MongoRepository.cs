@@ -178,7 +178,7 @@ namespace DynTech.IdentityServer.Data
         /// <returns>Count of entities in the collection.</returns>
         public virtual long Count()
         {
-            return this.collection.Count(t => true);
+            return this.collection.CountDocuments(t => true);
         }
 
         /// <summary>
