@@ -89,7 +89,7 @@ namespace DynTech.IdentityServer
             // Setup Databases
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
-                Task.Run(() => new SeedMongoDBData().Seeding(serviceScope));
+                SeedMongoDBData.Seeding(serviceScope);
             }
 
             app.UseIdentityServerMongoDBTokenCleanup(applicationLifetime);

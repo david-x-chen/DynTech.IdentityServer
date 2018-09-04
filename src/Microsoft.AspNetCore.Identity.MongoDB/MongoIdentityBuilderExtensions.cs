@@ -62,9 +62,14 @@ namespace Microsoft.Extensions.DependencyInjection
 				              + "these do not match.";
 				throw new ArgumentException(message);
 			}
-			builder.Services.AddSingleton<IUserStore<TUser>>(p => new UserStore<TUser>(usersCollectionFactory(p)));
-			builder.Services.AddSingleton<IRoleStore<TRole>>(p => new RoleStore<TRole>(rolesCollectionFactory(p)));
-			return builder;
+
+			builder.Services.AddTransient<IMongoUserStore<TUser>>(p => new UserStore<TUser>(usersCollectionFactory(p)));
+			builder.Services.AddTransient<IMongoRoleStore<TRole>>(p => new RoleStore<TRole>(rolesCollectionFactory(p)));
+
+            builder.Services.AddTransient<IUserStore<TUser>>(p => new UserStore<TUser>(usersCollectionFactory(p)));
+            builder.Services.AddTransient<IRoleStore<TRole>>(p => new RoleStore<TRole>(rolesCollectionFactory(p)));
+
+            return builder;
 		}
 
 		/// <summary>

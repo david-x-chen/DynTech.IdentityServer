@@ -10,29 +10,18 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 	using System.Security.Claims;
 	using System.Threading;
 	using System.Threading.Tasks;
-	using global::MongoDB.Bson;
+    using Microsoft.AspNetCore.Identity;
+
+    using global::MongoDB.Bson;
 	using global::MongoDB.Driver;
 
 	/// <summary>
 	///     When passing a cancellation token, it will only be used if the operation requires a database interaction.
 	/// </summary>
 	/// <typeparam name="TUser"></typeparam>
-	public class UserStore<TUser> :
-			IUserPasswordStore<TUser>,
-			IUserRoleStore<TUser>,
-			IUserLoginStore<TUser>,
-			IUserSecurityStampStore<TUser>,
-			IUserEmailStore<TUser>,
-			IUserClaimStore<TUser>,
-			IUserPhoneNumberStore<TUser>,
-			IUserTwoFactorStore<TUser>,
-			IUserTwoFactorRecoveryCodeStore<TUser>,
-			IUserLockoutStore<TUser>,
-			IQueryableUserStore<TUser>,
-			IUserAuthenticatorKeyStore<TUser>,
-			IUserAuthenticationTokenStore<TUser>
-		where TUser : IdentityUser
-	{
+    public class UserStore<TUser> : IMongoUserStore<TUser>
+        where TUser : IdentityUser
+    {
 		private readonly IMongoCollection<TUser> _Users;
 		private const string InternalLoginProvider = "[AspNetUserStore]";
         private const string AuthenticatorKeyTokenName = "AuthenticatorKey";
@@ -55,7 +44,10 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 
 		public virtual async Task<IdentityResult> CreateAsync(TUser user, CancellationToken token)
 		{
-			await _Users.InsertOneAsync(user, cancellationToken: token);
+            var hasher = new PasswordHasher<TUser>();
+            user.PasswordHash = hasher.HashPassword(user, user.PasswordHash);
+
+            await _Users.InsertOneAsync(user, cancellationToken: token);
 			return IdentityResult.Success;
 		}
 

@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using DynTech.IdentityServer.Configuration;
 using DynTech.IdentityServer.Models;
 using IdentityServer4.MongoDB.Interfaces;
 using IdentityServer4.MongoDB.Mappers;
-using Microsoft.AspNetCore.Identity;
-using MongoIdentity = Microsoft.AspNetCore.Identity.MongoDB;
+using identityCore = Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.MongoDB;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
@@ -23,21 +22,24 @@ namespace DynTech.IdentityServer.Data.Seeding
         /// Seeding data.
         /// </summary>
         /// <param name="serviceScope">service Scope.</param>
-        public async Task Seeding(IServiceScope serviceScope)
+        public static void Seeding(IServiceScope serviceScope)
         {
-                var provider = serviceScope.ServiceProvider;
-                EnsureSeedData(provider.GetService<IConfigurationDbContext>());
+            var seeding = new SeedMongoDBData();
+            var provider = serviceScope.ServiceProvider;
+            var context = provider.GetService<IConfigurationDbContext>();
+            seeding.EnsureSeedData(context).Wait();
 
-                var userManager = provider.GetService<UserManager<ApplicationUser>>();
-                var roleManager = provider.GetService<RoleManager<MongoIdentity.IdentityRole>>();
-                await EnsureSuperUser(userManager, roleManager);
+            var userManager = provider.GetService<identityCore.UserManager<ApplicationUser>>();
+            var roleManager = provider.GetService<identityCore.RoleManager<IdentityRole>>();
+
+            seeding.EnsureSuperUser(userManager, roleManager).Wait();
         }
 
         /// <summary>
         /// Ensures the seed data.
         /// </summary>
         /// <param name="context">Context.</param>
-        private void EnsureSeedData(IConfigurationDbContext context)
+        private async Task EnsureSeedData(IConfigurationDbContext context)
         {
             //if (!context.Clients.Any())
             //{
@@ -51,7 +53,7 @@ namespace DynTech.IdentityServer.Data.Seeding
             {
                 foreach (var resource in Resources.GetIdentityResources().ToList())
                 {
-                    context.AddIdentityResource(resource.ToEntity());
+                   await context.AddIdentityResource(resource.ToEntity());
                 }
             }
 
@@ -59,7 +61,7 @@ namespace DynTech.IdentityServer.Data.Seeding
             {
                 foreach (var resource in Resources.GetApiResources().ToList())
                 {
-                    context.AddApiResource(resource.ToEntity());
+                    await context.AddApiResource(resource.ToEntity());
                 }
             }
         }
@@ -67,12 +69,12 @@ namespace DynTech.IdentityServer.Data.Seeding
         /// <summary>
         /// Ensures super user account
         /// </summary>
-        private async Task EnsureSuperUser(UserManager<ApplicationUser> userManager, RoleManager<MongoIdentity.IdentityRole> roleManager)
+        private async Task EnsureSuperUser(identityCore.UserManager<ApplicationUser> userManager, identityCore.RoleManager<IdentityRole> roleManager)
         {
             var adminRole = await roleManager.FindByNameAsync("SiteAdmin");
             if (adminRole == null)
             {
-                adminRole = new MongoIdentity.IdentityRole("SiteAdmin");
+                adminRole = new IdentityRole("SiteAdmin");
                 var addedRole = await roleManager.CreateAsync(adminRole);
 
                 if (addedRole.Succeeded)
@@ -87,7 +89,7 @@ namespace DynTech.IdentityServer.Data.Seeding
             var userRole = await roleManager.FindByNameAsync("SiteUser");
             if (userRole == null)
             {
-                userRole = new MongoIdentity.IdentityRole("SiteUser");
+                userRole = new IdentityRole("SiteUser");
                 var addedRole = await roleManager.CreateAsync(userRole);
 
                 if (addedRole.Succeeded)
@@ -103,19 +105,29 @@ namespace DynTech.IdentityServer.Data.Seeding
                 UserName = "idsrv_admin",
                 Email = "idsrv_admin@dyntech.solutions",
                 EmailConfirmed = true,
-                IsAdmin = true
+                IsAdmin = true,
+                PasswordHash = "P@$sw0rd",
             };
 
-            adminRole = await roleManager.FindByNameAsync("SiteAdmin");
-            user.AddRole(adminRole.Name);
-
-            var result = await userManager.CreateAsync(user, "P@$sw0rd");
-            if (result.Succeeded)
+            var existing = await userManager.FindByEmailAsync(user.Email);
+            if (existing == null)
             {
-                Log.Information("Created super user.");
-            }
+                adminRole = await roleManager.FindByNameAsync("SiteAdmin");
+                user.AddRole(adminRole.Name);
+                user.NormalizedUserName = user.UserName;
 
-            await userManager.AddClaimsAsync(user, adminRole.Claims.Select(c => c.ToSecurityClaim()));
+                var result = await userManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    Log.Information("Created super user.");
+                }
+
+                await userManager.AddClaimsAsync(user, adminRole.Claims.Select(c => c.ToSecurityClaim()));
+            }
+            else
+            {
+                Log.Information("user {0} exists!", user.Email);
+            }
         }
     }
 }

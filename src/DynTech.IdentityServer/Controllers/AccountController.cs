@@ -15,6 +15,7 @@ using System;
 using DynTech.IdentityServer.Extensions;
 using MongoIdentity = Microsoft.AspNetCore.Identity.MongoDB;
 using System.Linq;
+using System.Threading;
 
 namespace DynTech.IdentityServer.Controllers
 {
@@ -25,8 +26,8 @@ namespace DynTech.IdentityServer.Controllers
     [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
-        private readonly RoleManager<MongoIdentity.IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<MongoIdentity.IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
@@ -48,18 +49,18 @@ namespace DynTech.IdentityServer.Controllers
         /// <param name="roleManager">role Manager.</param>
         public AccountController(
             UserManager<ApplicationUser> userManager,
+            RoleManager<MongoIdentity.IdentityRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ILogger<AccountController> logger,
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IHttpContextAccessor httpContextAccessor,
-            IAuthenticationSchemeProvider schemeProvider,
-            RoleManager<MongoIdentity.IdentityRole> roleManager
+            IAuthenticationSchemeProvider schemeProvider
         )
         {
-            _roleManager = roleManager;
             _userManager = userManager;
+            _roleManager = roleManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
@@ -177,7 +178,7 @@ namespace DynTech.IdentityServer.Controllers
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                throw new ApplicationException($"Unable to load user with ID.");
             }
 
             var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
@@ -306,10 +307,10 @@ namespace DynTech.IdentityServer.Controllers
             if (ModelState.IsValid)
             {
                 var userRole = await _roleManager.FindByNameAsync("SiteUser");
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, PasswordHash = model.Password };
                 user.AddRole(userRole.NormalizedName);
                 
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 { 
                     await _userManager.AddClaimsAsync(user, userRole.Claims.Select(c => c.ToSecurityClaim()));
