@@ -5,9 +5,6 @@
     <VersionPrefix>0.1.11</VersionPrefix>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="wwwroot\js\qrcode.min.js" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Update="wwwroot\**\*.ts;wwwroot\**\*.less;wwwroot\**\*.js;wwwroot\**\*.css;wwwroot\**\*.json;" CopyToPublishDirectory="Never" />
     <Content Update="wwwroot\**\*.min.js;wwwroot\**\*.min.css;wwwroot\**\*" CopyToPublishDirectory="Always" />
   </ItemGroup>
@@ -32,15 +29,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.AspNetCore.Identity.MongoDB\Microsoft.AspNetCore.Identity.MongoDB.csproj" />
     <ProjectReference Include="..\DynTech.IdentityServer.Data\DynTech.IdentityServer.Data.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Users\" />
-    <Folder Include="Models\UserViewModels\" />
-    <Folder Include="Models\ClientViewModels\" />
-    <Folder Include="Views\Clients\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="wwwroot\js\qrcode.min.js" />
   </ItemGroup>
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish" />
 </Project>
