@@ -104,7 +104,14 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 			=> user.PasswordHash;
 
 		public virtual async Task<bool> HasPasswordAsync(TUser user, CancellationToken token)
-			=> user.HasPassword();
+        {
+            var builder = new FilterDefinitionBuilder<TUser>();
+            var filter = builder.Eq(u => u.NormalizedEmail, user.NormalizedEmail);
+            var userInfo = await _Users.FindAsync(filter);
+            var existingUser = userInfo.FirstOrDefault();
+
+            return existingUser != null && !string.IsNullOrEmpty(existingUser.PasswordHash);
+        }
 
 		public virtual async Task AddToRoleAsync(TUser user, string normalizedRoleName, CancellationToken token)
 			=> user.AddRole(normalizedRoleName);

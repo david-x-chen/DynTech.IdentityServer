@@ -3,19 +3,22 @@
 @{
     ViewData["Title"] = "Client List";
 }
-<div class="grants">
-    <div class="row page-header">
-        <div class="col-sm-10">
-            <h1>
-                Client List
-            </h1>
-            <div>
-                <a asp-area="" asp-controller="Clients" asp-action="Detail" asp-route-id="-">New Client</a>
-            </div>
-        </div>
-    </div>
 
-    @if (Model.Clients.Any() == false)
+@await Html.PartialAsync("_BreadcrumbPartial")
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="grants">
+            <div class="row page-header">
+                <div class="col-sm-10">
+                    <h1>
+                        Client List
+                    </h1>
+                    <div>
+                        <a asp-area="" asp-controller="Clients" asp-action="Detail" asp-route-id="-">New Client</a>
+                    </div>
+                </div>
+            </div>
+            @if (Model.Clients.Any() == false)
     {
         <div class="row">
             <div class="col-sm-8">
@@ -24,25 +27,27 @@
                 </div>
             </div>
         </div>
-    }
-    else
-    {
+}
+else
+{
         <div class="row">
             <div class="col-sm-8">
             </div>
         </div>
-    
+
         foreach (var client in Model.Clients)
         {
-            <div class="row grant">
-                <div class="col-sm-2">
+                <div class="row grant">
+                    <div class="col-sm-2">
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="clientname"><a asp-area="" asp-controller="Clients" asp-action="Detail" asp-route-id="@client.ClientId">@client.ClientName</a></div>
+                    </div>
+                    <div class="col-sm-2">
+                    </div>
                 </div>
-                <div class="col-sm-8">
-                    <div class="clientname"><a asp-area="" asp-controller="Clients" asp-action="Detail" asp-route-id="@client.ClientId">@client.ClientName</a></div>
-                </div>
-                <div class="col-sm-2">
-                </div>
-            </div>
         }
-    }
+}
+        </div>
+    </div>
 </div>

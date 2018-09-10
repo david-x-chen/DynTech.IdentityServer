@@ -78,11 +78,6 @@
 			Logins.RemoveAll(l => l.LoginProvider == loginProvider && l.ProviderKey == providerKey);
 		}
 
-		public virtual bool HasPassword()
-		{
-			return false;
-		}
-
 		[BsonIgnoreIfNull]
 		public virtual List<IdentityUserClaim> Claims { get; set; }
 
