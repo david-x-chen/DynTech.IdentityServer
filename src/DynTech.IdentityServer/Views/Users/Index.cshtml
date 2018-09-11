@@ -27,33 +27,33 @@
             }
             else
             {
-                foreach (var user in Model.Users)
-                {
-                    int index = 1;
-                    <div class="row grant">
-                        <div class="col-sm-2">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">User Name</th>
-                                        <th scope="col">Email Address</th>
-                                        <th scope="col">Registered Clients</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">@index</th>
-                                        <td>@user.UserName</td>
-                                        <td>@user.Email</td>
-                                        <td>@string.Join(",", user.ClientNames)</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="row grant">
+                    <div class="col-sm-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">User Name</th>
+                                    <th scope="col">Email Address</th>
+                                    <th scope="col">Registered Clients</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var user in Model.Users)
+                            {
+                                int index = 1;
+                                <tr>
+                                    <th scope="row">@index</th>
+                                    <td>@user.UserName</td>
+                                    <td>@user.Email</td>
+                                    <td>@string.Join(",", user.ClientNames)</td>
+                                </tr>
+                                index++;
+                            }
+                            </tbody>
+                        </table>
                     </div>
-                    index++;
-                }
+                </div>
             }
         </div>
     </div>

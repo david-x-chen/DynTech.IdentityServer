@@ -285,7 +285,7 @@ namespace DynTech.IdentityServer.Controllers
         /// <returns>The register.</returns>
         /// <param name="returnUrl">Return URL.</param>
         [HttpGet]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -299,7 +299,7 @@ namespace DynTech.IdentityServer.Controllers
         /// <param name="model">Model.</param>
         /// <param name="returnUrl">Return URL.</param>
         [HttpPost]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {

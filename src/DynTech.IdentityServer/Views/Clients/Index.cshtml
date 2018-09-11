@@ -19,35 +19,50 @@
                 </div>
             </div>
             @if (Model.Clients.Any() == false)
-    {
-        <div class="row">
-            <div class="col-sm-8">
-                <div class="alert alert-info">
-                    No clients registered
-                </div>
-            </div>
-        </div>
-}
-else
-{
-        <div class="row">
-            <div class="col-sm-8">
-            </div>
-        </div>
-
-        foreach (var client in Model.Clients)
-        {
-                <div class="row grant">
-                    <div class="col-sm-2">
-                    </div>
+            {
+                <div class="row">
                     <div class="col-sm-8">
-                        <div class="clientname"><a asp-area="" asp-controller="Clients" asp-action="Detail" asp-route-id="@client.ClientId">@client.ClientName</a></div>
+                        <div class="alert alert-info">
+                            No clients registered
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row grant">
+                    <div class="col-sm-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Client Name</th>
+                                    <th scope="col">Allowed Grant Type</th>
+                                    <th scope="col">Redirect Uris</th>
+                                    <th scope="col">Post Logout Redirect Uris</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var client in Model.Clients)
+                            {
+                                int index = 1;
+                                <tr>
+                                    <th scope="row">@index</th>
+                                    <td><a asp-area="" asp-controller="Clients" asp-action="Detail" asp-route-id="@client.ClientId">
+                                            @client.ClientName</a></td>
+                                    <td>@client.AllowedGrantType</td>
+                                    <td>@string.Join(",", client.RedirectUris)</td>
+                                    <td>@string.Join(",", client.PostLogoutRedirectUris)</td>
+                                </tr>
+                                index++;
+                            }
+                            </tbody>
+                        </table>
                     </div>
                     <div class="col-sm-2">
                     </div>
                 </div>
-        }
-}
+            }
         </div>
     </div>
 </div>
