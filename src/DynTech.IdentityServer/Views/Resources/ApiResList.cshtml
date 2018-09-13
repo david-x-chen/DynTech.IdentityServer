@@ -1,0 +1,66 @@
+@using DynTech.IdentityServer.Models.ResourceModels
+@model IdentityResourcesViewModel
+@{
+    ViewData["Title"] = "Identity Resource List";
+}
+
+@await Html.PartialAsync("_BreadcrumbPartial")
+<div class="container-fluid">
+    <div class="animated fadeIn">
+        <div class="grants">
+            <div class="row page-header">
+                <div class="col-sm-10">
+                    <h1>
+                        @ViewData["Title"]
+                    </h1>
+                    <div>
+                        <a asp-area="" asp-controller="Clients" asp-action="Detail" asp-route-id="-">New Resource</a>
+                    </div>
+                </div>
+            </div>
+            @if (Model.IdentityResources.Any() == false)
+            {
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="alert alert-info">
+                            No clients registered
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row grant">
+                    <div class="col-sm-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Display Name</th>
+                                    <th scope="col">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @{ int index = 1; }
+                            @foreach (var res in Model.IdentityResources)
+                            {
+                                <tr>
+                                    <th scope="row">@index</th>
+                                    <td><a asp-area="" asp-controller="Clients" asp-action="Detail" asp-route-id="@res.Id">
+                                            @res.Name</a></td>
+                                    <td>@res.DisplayName</td>
+                                    <td>@res.Description</td>
+                                </tr>
+                                index++;
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-2">
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

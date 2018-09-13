@@ -130,6 +130,7 @@ namespace DynTech.IdentityServer
                 .AddAspNetIdentity<ApplicationUser>();
             
             services.AddSingleton<IClientRepository>(new ClientRepository(connectionStr));
+            services.AddSingleton<IIdentityResourceRepository>(new IdentityResourceRepository(connectionStr));
 
             return services;
         }
@@ -151,6 +152,8 @@ namespace DynTech.IdentityServer
                                   policy => policy.RequireClaim(CustomClaimTypes.Permission, "users.view"));
                 options.AddPolicy("View Clients",
                                   policy => policy.RequireClaim(CustomClaimTypes.Permission, "clients.view"));
+                options.AddPolicy("View Resources",
+                                  policy => policy.RequireClaim(CustomClaimTypes.Permission, "idres.view", "apires.view"));
             });
 
             var authSection = Configuration.GetSection("Authentication");

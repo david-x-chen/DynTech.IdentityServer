@@ -9,28 +9,11 @@ namespace DynTech.IdentityServer.Configuration
     {
         /// <summary>
         /// </summary>
-        public static IEnumerable<IdentityResource> GetIdentityResources()
-        {
-            return new[]
-            {
-                // some standard scopes from the OIDC spec
-                new IdentityResources.OpenId(),
-                new IdentityResources.Profile(),
-                new IdentityResources.Email(),
-                new IdentityResources.Phone(),
-
-                // custom identity resource with some consolidated claims
-                new IdentityResource("apiscope",new []{ "role", "admin", "user", "api", "api.admin" , "api.user" } )
-            };
-        }
-
-        /// <summary>
-        /// </summary>
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>
             {
-                new ApiResource("api")
+                new ApiResource("custom-api")
                 {
                     ApiSecrets =
                     {
@@ -40,7 +23,7 @@ namespace DynTech.IdentityServer.Configuration
                     {
                         new Scope
                         {
-                            Name = "apiscope",
+                            Name = "custom-scope",
                             DisplayName = "Scope for the api service"
                         }
                     },

@@ -10,6 +10,7 @@ using identityCore = Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.MongoDB;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using IdentityServer4.Models;
 
 namespace DynTech.IdentityServer.Data.Seeding
 {
@@ -51,15 +52,15 @@ namespace DynTech.IdentityServer.Data.Seeding
 
             if (!context.IdentityResources.Any())
             {
-                foreach (var resource in Resources.GetIdentityResources().ToList())
-                {
-                   await context.AddIdentityResource(resource.ToEntity());
-                }
+                await context.AddIdentityResource((new IdentityResources.OpenId()).ToEntity());
+                await context.AddIdentityResource((new IdentityResources.Profile()).ToEntity());
+                await context.AddIdentityResource((new IdentityResources.Email()).ToEntity());
+                await context.AddIdentityResource((new IdentityResources.Phone()).ToEntity());
             }
 
             if (!context.ApiResources.Any())
             {
-                foreach (var resource in Resources.GetApiResources().ToList())
+                foreach (var resource in Configuration.Resources.GetApiResources().ToList())
                 {
                     await context.AddApiResource(resource.ToEntity());
                 }
@@ -83,6 +84,8 @@ namespace DynTech.IdentityServer.Data.Seeding
                     await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "users.create"));
                     await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "users.update"));
                     await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "clients.view"));
+                    await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "idres.view"));
+                    await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "apires.view"));
                 }
             }
 
