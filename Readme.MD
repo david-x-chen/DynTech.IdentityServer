@@ -1,4 +1,6 @@
-﻿Run following commands in the same folder.
+﻿[![Build status](https://techpro.visualstudio.com/DynTech.IdentityServer/_apis/build/status/idsrv4_to_docker)](https://techpro.visualstudio.com/DynTech.IdentityServer/_build/latest?definitionId=1)
+
+Run following commands in the same folder.
 
 # Add migrations for ApplicationDbContext
 dotnet ef migrations add UpdateApplicationUser -c ApplicationDbContext -o Data/Migrations
