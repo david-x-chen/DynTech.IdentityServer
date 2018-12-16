@@ -4,13 +4,14 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <VersionPrefix>0.2.1</VersionPrefix>
     <VersionSuffix>alpha</VersionSuffix>
+    <RuntimeIdentifers>osx-x64;alpine-x64</RuntimeIdentifers>
   </PropertyGroup>
   <ItemGroup>
     <Content Update="wwwroot\**\*.ts;wwwroot\**\*.less;wwwroot\**\*.js;wwwroot\**\*.css;wwwroot\**\*.json;" CopyToPublishDirectory="Never" />
     <Content Update="wwwroot\**\*.min.js;wwwroot\**\*.min.css;wwwroot\**\*" CopyToPublishDirectory="Always" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.All" />
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="2.1.2-dev-00024" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.2-dev-00774" />
