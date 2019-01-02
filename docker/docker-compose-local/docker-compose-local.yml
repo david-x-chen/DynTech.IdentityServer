@@ -22,6 +22,7 @@ services:
     image: davidxchen/profile:latest  
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLs=http://0.0.0.0:5000
       - DB_HOST=database
     ports:
       - "5000:5000"
