@@ -20,7 +20,7 @@ ARG DB_REPLICA=""
 ARG DB_USER=""
 ARG DB_PWD=""
 # Set environment variables
-ENV ASPNETCORE_URLS="http://[::]:80"
+#ENV ASPNETCORE_URLS="http://0.0.0.0:5000"
 ENV ASPNETCORE_ENVIRONMENT="Docker"
 ENV DB_HOST=$DB_HOST
 ENV DB_REPLICA=$DB_REPLICA
@@ -32,6 +32,6 @@ ADD VERSION .
 WORKDIR /publish
 COPY --from=build-env /publish .
 
-EXPOSE 80
+EXPOSE 5000 5001
 
 ENTRYPOINT ["dotnet", "DynTech.IdentityServer.dll"]
