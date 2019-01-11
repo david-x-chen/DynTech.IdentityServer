@@ -3,7 +3,7 @@
     <Description>A MongoDB provider for ASP.NET Core Identity framework.</Description>
     <VersionPrefix>1.0.3</VersionPrefix>
     <Authors>Wes Higbee</Authors>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <PackageId>Microsoft.AspNetCore.Identity.MongoDB</PackageId>
     <PackageTags>aspnetcore;mongo;mongodb;identity;membership</PackageTags>
