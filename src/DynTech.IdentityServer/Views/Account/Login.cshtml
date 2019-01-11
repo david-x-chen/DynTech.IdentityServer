@@ -1,7 +1,9 @@
 ﻿@using System.Collections.Generic
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Identity.MongoDB
+@using DynTech.IdentityServer.Services
 @model LoginViewModel
+@inject IAppVersionService AppVersionService
 
 @inject SignInManager<ApplicationUser> SignInManager
 
@@ -44,7 +46,12 @@
                             <div class="col-6 text-right">
                                 <button type="button" class="btn btn-link px-0">Forgot password?</button>
                             </div>
-                        </div>	    	
+                        </div>	
+                        <div class="row">
+                            <div class="col-6 text-center"> 
+                                <p class="text-muted">[ver.@AppVersionService.Version]</p>
+                            </div>
+                        </div>    	
 	                </div>
                 </div>
                 <div class="card bg-light py-5 d-md-down-none" style="width:44%">

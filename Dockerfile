@@ -11,7 +11,7 @@ WORKDIR /app
 RUN dotnet restore
 
 WORKDIR /app/src/DynTech.IdentityServer
-RUN dotnet publish -o /publish -c Release -f netcoreapp2.1 -r debian.9-x64 --version-suffix $APP_VER
+RUN dotnet publish -o /publish -c Release -f netcoreapp2.2 -r debian.9-x64 --version-suffix $APP_VER
 
 
 # Runtime Image Stage
