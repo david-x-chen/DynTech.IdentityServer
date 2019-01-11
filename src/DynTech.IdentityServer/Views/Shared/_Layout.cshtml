@@ -1,5 +1,7 @@
 ﻿@using IdentityServer4.Extensions
-@using System.Reflection
+@using DynTech.IdentityServer.Services
+@inject IAppVersionService AppVersionService
+
 @{
     string classStr = string.Empty;
     string userName = Context.User?.FindFirst("name")?.Value;
@@ -11,8 +13,6 @@
     {
         classStr = "app flex-row align-items-center";
     }
-
-    var assemblyVersion = System.Reflection.Assembly.GetEntryAssembly().GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>().InformationalVersion;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +22,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta name="description" content="Identity Server">
     <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
-    <title>@ViewData["Title"] - Identity Server [@assemblyVersion]</title>
+    <title>@ViewData["Title"] - Identity Server [ver.@AppVersionService.Version]</title>
 
     <environment names="Development,Docker,Staging,Production">
         <!-- Icons-->
@@ -59,6 +59,7 @@
       <div>
         <a href="https://dyntech.solutions">Dyn Tech</a>
         <span>&copy; 2018 Solutions.</span>
+        <span>[ver.@AppVersionService.Version]</span>
       </div>
       <div class="ml-auto">
         <span>Powered by</span>

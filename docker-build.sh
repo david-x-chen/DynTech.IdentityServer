@@ -10,4 +10,4 @@ IMAGE=profile
 
 #dotnet publish -c release -o ~/Projects/DynTech.IdentityServer/publish -f netcoreapp2.0
 
-docker build -t $USERNAME/$IMAGE:latest .
+docker build -t $USERNAME/$IMAGE:latest --build-arg APP_VER=alpha .

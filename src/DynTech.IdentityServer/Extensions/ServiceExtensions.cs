@@ -13,6 +13,7 @@ using System.Linq;
 using DynTech.IdentityServer.Data;
 using DynTech.IdentityServer.Data.Interfaces;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DynTech.IdentityServer
 {
@@ -131,6 +132,8 @@ namespace DynTech.IdentityServer
             
             services.AddSingleton<IClientRepository>(new ClientRepository(connectionStr));
             services.AddSingleton<IIdentityResourceRepository>(new IdentityResourceRepository(connectionStr));
+            
+            services.AddTransient<IAppVersionService, AppVersionService>();
 
             return services;
         }

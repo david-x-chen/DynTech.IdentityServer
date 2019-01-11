@@ -1,6 +1,8 @@
 # Build Stage
 FROM microsoft/dotnet:2.2-sdk AS build-env
 
+ARG APP_VER
+
 COPY src /app/src
 COPY DynTech.IdentityServer.sln /app/DynTech.IdentityServer.sln
 #COPY NuGet.config /app/NuGet.config
@@ -9,7 +11,7 @@ WORKDIR /app
 RUN dotnet restore
 
 WORKDIR /app/src/DynTech.IdentityServer
-RUN dotnet publish -o /publish -c Release -f netcoreapp2.1 -r debian.9-x64
+RUN dotnet publish -o /publish -c Release -f netcoreapp2.1 -r debian.9-x64 --version-suffix $APP_VER
 
 
 # Runtime Image Stage
