@@ -22,7 +22,7 @@
 #addin nuget:?package=Cake.Sonar
 #addin nuget:?package=Cake.DocFx
 
-SetMiniCoverToolsProject("./build/build_tools.csproj");
+SetMiniCoverToolsProject("./buildcake/build_tools.csproj");
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
