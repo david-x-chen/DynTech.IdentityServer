@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <VersionPrefix>0.2.2</VersionPrefix>
     <VersionSuffix>alpha</VersionSuffix>
+    <ProjectGuid>{5B2B6BDE-5507-4790-B885-4813FE5BD502}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>

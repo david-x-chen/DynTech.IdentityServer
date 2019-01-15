@@ -13,6 +13,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/g0t4/aspnet-identity-mongo</RepositoryUrl>
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard2.0' ">2.0.8</NetStandardImplicitPackageVersion>
+    <ProjectGuid>{994F9DCA-2898-466A-A40A-021EA2200351}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.1.0" />

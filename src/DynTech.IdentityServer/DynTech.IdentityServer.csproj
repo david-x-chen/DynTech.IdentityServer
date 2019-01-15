@@ -5,6 +5,7 @@
     <VersionPrefix Condition=" '$(BUILD_BUILDNUMBER)' == '' ">0.2.2</VersionPrefix>
     <VersionSuffix Condition=" '$(BUILD_BUILDNUMBER)' == '' ">$(BUILD_BUILDNUMBER)</VersionSuffix>
     <RuntimeIdentifers>osx-x64;alpine-x64</RuntimeIdentifers>
+    <ProjectGuid>{3DD47E3F-947E-4EAE-9B6A-9D4F35B40802}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <Content Update="wwwroot\**\*.ts;wwwroot\**\*.less;wwwroot\**\*.js;wwwroot\**\*.css;wwwroot\**\*.json;" CopyToPublishDirectory="Never" />
