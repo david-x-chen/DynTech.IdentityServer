@@ -194,3 +194,5 @@ ModelManifest.xml
 .vs/
 .vscode/
 logs/
+.sonarqube/
+coverage.opencover.xml
