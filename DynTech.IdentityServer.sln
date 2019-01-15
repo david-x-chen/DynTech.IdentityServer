@@ -2,11 +2,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynTech.IdentityServer", "src\DynTech.IdentityServer\DynTech.IdentityServer.csproj", "{3DD47E3F-947E-4EAE-9B6A-9D4F35B40802}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynTech.IdentityServer", "src\DynTech.IdentityServer\DynTech.IdentityServer.csproj", "{3DD47E3F-947E-4EAE-9B6A-9D4F35B40802}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.AspNetCore.Identity.MongoDB", "src\Microsoft.AspNetCore.Identity.MongoDB\Microsoft.AspNetCore.Identity.MongoDB.csproj", "{994F9DCA-2898-466A-A40A-021EA2200351}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AspNetCore.Identity.MongoDB", "src\Microsoft.AspNetCore.Identity.MongoDB\Microsoft.AspNetCore.Identity.MongoDB.csproj", "{994F9DCA-2898-466A-A40A-021EA2200351}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynTech.IdentityServer.Data", "src\DynTech.IdentityServer.Data\DynTech.IdentityServer.Data.csproj", "{5B2B6BDE-5507-4790-B885-4813FE5BD502}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynTech.IdentityServer.Data", "src\DynTech.IdentityServer.Data\DynTech.IdentityServer.Data.csproj", "{5B2B6BDE-5507-4790-B885-4813FE5BD502}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynTech.IdentityServer.Test", "test\DynTech.IdentityServer.Test\DynTech.IdentityServer.Test.csproj", "{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +28,10 @@ Global
 		{5B2B6BDE-5507-4790-B885-4813FE5BD502}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B2B6BDE-5507-4790-B885-4813FE5BD502}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B2B6BDE-5507-4790-B885-4813FE5BD502}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,6 @@
-using System;
+using DynTech.IdentityServer.Services;
 using Xunit;
+using FluentAssertions;
 
 namespace DynTech.IdentityServer.Test
 {
@@ -9,6 +10,7 @@ namespace DynTech.IdentityServer.Test
         public void GetVersionNumber()
         {
             var service = new AppVersionService();
+            service.Version.Should().StartWith("0.2");
         }
     }
 }
