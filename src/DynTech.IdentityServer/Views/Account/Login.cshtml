@@ -23,7 +23,7 @@
                             <form asp-controller="Account" autocomplete="off" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="omb_loginForm">
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                        <span class="input-group-text"><em class="fa fa-user"></em></span>
                                     </div>
                                     <input asp-for="Email" class="form-control" placeholder="email address" />
                                 </div>
@@ -31,7 +31,7 @@
                                                     
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                        <span class="input-group-text"><em class="fa fa-lock"></em></span>
                                     </div>
                                     <input asp-for="Password" class="form-control" placeholder="Password" />
                                 </div>
@@ -78,21 +78,21 @@
                                             @if (provider.DisplayName == "Google")
                                             {
                                                 <button type="submit" class="btn btn-brand btn-lg btn-google-plus" name="provider" value="Google"  style="margin-bottom: 4px">
-                                                    <i class="fab fa-google-plus"></i>
+                                                    <em class="fab fa-google-plus"></em>
                                                     <span>Google+</span>
                                                 </button>
                                             }
                                             @if (provider.DisplayName == "Twitter")
                                             {
                                                 <button type="button" class="btn btn-brand btn-lg btn-twitter" name="provider" value="Twitter" style="margin-bottom: 4px">
-                                                    <i class="fab fa-twitter"></i>
+                                                    <em class="fab fa-twitter"></em>
                                                     <span>Twitter</span>
                                                 </button>
                                             }
                                             @if (provider.DisplayName == "Microsoft")
                                             {
                                                 <button type="submit" class="btn btn-brand btn-lg btn-github" name="provider" value="Microsoft" title="Log in using your Microsoft account">         
-                                                    <i class="fab fa-microsoft"></i>
+                                                    <em class="fab fa-microsoft"></em>
                                                     <span>Microsoft</span>
                                                 </button>
                                             }
