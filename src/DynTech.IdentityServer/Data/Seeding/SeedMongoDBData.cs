@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.MongoDB;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using IdentityServer4.Models;
+using System;
 
 namespace DynTech.IdentityServer.Data.Seeding
 {
@@ -103,13 +104,15 @@ namespace DynTech.IdentityServer.Data.Seeding
                 }
             }
 
+            var envVar = Environment.GetEnvironmentVariables();
+
             var user = new ApplicationUser()
             {
                 UserName = "idsrv_admin",
                 Email = "idsrv_admin@dyntech.solutions",
                 EmailConfirmed = true,
                 IsAdmin = true,
-                PasswordHash = "P@$sw0rd",
+                PasswordHash = envVar["INIT_ADMIN_PWD"].ToString(),
             };
 
             var existing = await userManager.FindByEmailAsync(user.Email);
