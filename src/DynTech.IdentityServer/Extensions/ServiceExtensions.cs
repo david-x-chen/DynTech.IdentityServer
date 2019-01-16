@@ -1,4 +1,3 @@
-using DynTech.IdentityServer.Data.Test;
 using IdentityServer4;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
