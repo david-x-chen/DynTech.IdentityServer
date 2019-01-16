@@ -4,6 +4,7 @@ FROM microsoft/dotnet:2.2-sdk AS build-env
 ARG APP_VER
 
 COPY src /app/src
+COPY test /app/test
 COPY DynTech.IdentityServer.sln /app/DynTech.IdentityServer.sln
 #COPY NuGet.config /app/NuGet.config
 WORKDIR /app
