@@ -18,6 +18,7 @@
                 <div class="card p-4">
                     <div class="card-body">
                         <h1>Login</h1>
+                        <span class="text-muted">[ver.@AppVersionService.Version]</span>
                         <p class="text-muted">Sign In to your account</p>
                         <div>
                             <form asp-controller="Account" autocomplete="off" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="omb_loginForm">
@@ -46,12 +47,7 @@
                             <div class="col-6 text-right">
                                 <button type="button" class="btn btn-link px-0">Forgot password?</button>
                             </div>
-                        </div>	
-                        <div class="row">
-                            <div class="col-6 text-center"> 
-                                <p class="text-muted">[ver.@AppVersionService.Version]</p>
-                            </div>
-                        </div>    	
+                        </div>   	
 	                </div>
                 </div>
                 <div class="card bg-light py-5 d-md-down-none" style="width:44%">
