@@ -21,7 +21,6 @@
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.1-dev-00771" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.0.2-dev-00187" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="IdentityServer4.Contrib.MongoDB" Version="2.0.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.7.2" />
     <PackageReference Include="App.Metrics" Version="3.0.0" />
     <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="3.0.0" />
@@ -32,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.AspNetCore.Identity.MongoDB\Microsoft.AspNetCore.Identity.MongoDB.csproj" />
     <ProjectReference Include="..\DynTech.IdentityServer.Data\DynTech.IdentityServer.Data.csproj" />
+    <ProjectReference Include="..\IdentityServer4.MongoDB\IdentityServer4.MongoDB.csproj" />
   </ItemGroup>
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish" />
 </Project>

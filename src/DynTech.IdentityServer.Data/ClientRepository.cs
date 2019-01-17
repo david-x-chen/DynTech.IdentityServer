@@ -63,7 +63,7 @@ namespace DynTech.IdentityServer.Data
 
         protected virtual void Dispose(bool disposing)
         {
-            
+            _disposed = disposing;
         }
 
         /// <summary>
