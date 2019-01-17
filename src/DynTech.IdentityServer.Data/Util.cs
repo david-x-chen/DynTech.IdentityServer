@@ -143,12 +143,12 @@ namespace DynTech.IdentityServer.Data
             string collectionname;
 
             // Check to see if the object (inherited from Entity) has a CollectionName attribute
-            Attribute att = typeof(T).GetTypeInfo().GetCustomAttribute(typeof(CollectionName));
+            Attribute att = typeof(T).GetTypeInfo().GetCustomAttribute(typeof(CollectionNameAttribute));
 
             if (att != null)
             {
                 // It does! Return the value specified by the CollectionName attribute
-                collectionname = ((CollectionName)att).Name;
+                collectionname = ((CollectionNameAttribute)att).Name;
             }
             else
             {
@@ -168,12 +168,12 @@ namespace DynTech.IdentityServer.Data
             string collectionname;
 
             // Check to see if the object (inherited from Entity) has a CollectionName attribute
-            var att = entitytype.GetTypeInfo().GetCustomAttribute(typeof(CollectionName));
+            var att = entitytype.GetTypeInfo().GetCustomAttribute(typeof(CollectionNameAttribute));
 
             if (att != null)
             {
                 // It does! Return the value specified by the CollectionName attribute
-                collectionname = ((CollectionName)att).Name;
+                collectionname = ((CollectionNameAttribute)att).Name;
             }
             else
             {

@@ -57,7 +57,13 @@ namespace DynTech.IdentityServer.Data
 
         public void Dispose()
         {
-            _disposed = true;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            
         }
 
         /// <summary>

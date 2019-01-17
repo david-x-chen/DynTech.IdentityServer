@@ -7,13 +7,13 @@ namespace DynTech.IdentityServer.Data
     /// is not specified, the classname will be used.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = true)]
-    public class CollectionName : Attribute
+    public class CollectionNameAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the CollectionName class attribute with the desired name.
         /// </summary>
         /// <param name="value">Name of the collection.</param>
-        public CollectionName(string value)
+        public CollectionNameAttribute(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Empty collectionname not allowed", nameof(value));

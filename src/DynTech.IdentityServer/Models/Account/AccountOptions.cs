@@ -8,11 +8,11 @@ namespace DynTech.IdentityServer.Models.Account
         /// <summary>
         /// The show logout prompt.
         /// </summary>
-        public static bool ShowLogoutPrompt = false;
+        public static bool ShowLogoutPrompt { get; private set; } = false;
 
         /// <summary>
         /// The automatic redirect after sign out.
         /// </summary>
-        public static bool AutomaticRedirectAfterSignOut = true;
+        public static bool AutomaticRedirectAfterSignOut { get; private set; } = true;
     }
 }

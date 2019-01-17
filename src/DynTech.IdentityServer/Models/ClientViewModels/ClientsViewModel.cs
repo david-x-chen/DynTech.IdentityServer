@@ -128,7 +128,7 @@ namespace DynTech.IdentityServer.Models.ClientViewModels
         /// <summary>
         /// The default scopes.
         /// </summary>
-        public List<string> DefaultScopes = new List<string>
+        public List<string> DefaultScopes { get; private set; } = new List<string>
         {
             "openid",
             "email",
