@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynTech.IdentityServer.Data
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynTech.IdentityServer.Test", "test\DynTech.IdentityServer.Test\DynTech.IdentityServer.Test.csproj", "{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.MongoDB", "src\IdentityServer4.MongoDB\IdentityServer4.MongoDB.csproj", "{0824A4EF-0E85-477F-A43C-12C268B9B271}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0824A4EF-0E85-477F-A43C-12C268B9B271}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0824A4EF-0E85-477F-A43C-12C268B9B271}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0824A4EF-0E85-477F-A43C-12C268B9B271}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0824A4EF-0E85-477F-A43C-12C268B9B271}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
