@@ -10,7 +10,7 @@ namespace DynTech.IdentityServer.Test
         public void GetVersionNumber()
         {
             var service = new AppVersionService();
-            service.Version.Should().StartWith("15");
+            service.Version.Should().StartWith("1");
         }
     }
 }
