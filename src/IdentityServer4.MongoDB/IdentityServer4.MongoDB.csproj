@@ -16,6 +16,7 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Version>2.3.1</Version>
+    <ProjectGuid>{0824A4EF-0E85-477F-A43C-12C268B9B271}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
