@@ -18,7 +18,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
     ///     When passing a cancellation token, it will only be used if the operation requires a database interaction.
     /// </summary>
     /// <typeparam name="TRole">Needs to extend the provided IdentityRole type.</typeparam>
-    public class RoleStore<TRole> : IMongoRoleStore<TRole> where TRole : IdentityRole
+    public sealed class RoleStore<TRole> : IMongoRoleStore<TRole> where TRole : IdentityRole
     {
 		private readonly IMongoCollection<TRole> _Roles;
 
@@ -27,80 +27,99 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 			_Roles = roles;
 		}
 
-		public virtual void Dispose()
+		public void Dispose()
 		{
             // no need to dispose of anything, mongodb handles connection pooling automatically
         }
 
-        public virtual async Task<IdentityResult> CreateAsync(TRole role, CancellationToken token = default(CancellationToken))
+        public async Task<IdentityResult> CreateAsync(TRole role, CancellationToken cancellationToken)
         {
-            await _Roles.InsertOneAsync(role, cancellationToken: token);
+            await _Roles.InsertOneAsync(role, cancellationToken: cancellationToken);
             return IdentityResult.Success;
         }
 
-        public virtual async Task<IdentityResult> UpdateAsync(TRole role, CancellationToken token = default(CancellationToken))
+        public async Task<IdentityResult> UpdateAsync(TRole role, CancellationToken cancellationToken)
 		{
-			var result = await _Roles.ReplaceOneAsync(r => r.Id == role.Id, role, cancellationToken: token);
-			// todo low priority result based on replace result
-			return IdentityResult.Success;
+			var result = await _Roles.ReplaceOneAsync(r => r.Id == role.Id, role, cancellationToken: cancellationToken);
+            if (result.IsAcknowledged)
+            {
+                return IdentityResult.Success;
+            }
+            else
+            {
+                return IdentityResult.Failed(new IdentityError());
+            }
+        }
+
+		public async Task<IdentityResult> DeleteAsync(TRole role, CancellationToken cancellationToken)
+		{
+			var result = await _Roles.DeleteOneAsync(r => r.Id == role.Id, cancellationToken);
+			if (result.IsAcknowledged)
+            {
+                return IdentityResult.Success;
+            }
+            else
+            {
+                return IdentityResult.Failed(new IdentityError());
+            }
 		}
 
-		public virtual async Task<IdentityResult> DeleteAsync(TRole role, CancellationToken token = default(CancellationToken))
-		{
-			var result = await _Roles.DeleteOneAsync(r => r.Id == role.Id, token);
-			// todo low priority result based on delete result
-			return IdentityResult.Success;
-		}
-
-		public virtual async Task<string> GetRoleIdAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<string> GetRoleIdAsync(TRole role, CancellationToken cancellationToken)
 			=> role.Id;
 
-		public virtual async Task<string> GetRoleNameAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<string> GetRoleNameAsync(TRole role, CancellationToken cancellationToken)
 			=> role.Name;
 
-		public virtual async Task SetRoleNameAsync(TRole role, string roleName, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task SetRoleNameAsync(TRole role, string roleName, CancellationToken cancellationToken)
 			=> role.Name = roleName;
 
 		// note: can't test as of yet through integration testing because the Identity framework doesn't use this method internally anywhere
-		public virtual async Task<string> GetNormalizedRoleNameAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<string> GetNormalizedRoleNameAsync(TRole role, CancellationToken cancellationToken)
 			=> role.NormalizedName;
 
-		public virtual async Task SetNormalizedRoleNameAsync(TRole role, string normalizedName, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task SetNormalizedRoleNameAsync(TRole role, string normalizedName, CancellationToken cancellationToken)
 			=> role.NormalizedName = normalizedName;
 
-		public virtual Task<TRole> FindByIdAsync(string roleId, CancellationToken token = default(CancellationToken))
+		public Task<TRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
 			=> _Roles.Find(r => r.Id == roleId)
-				.FirstOrDefaultAsync(token);
+				.FirstOrDefaultAsync(cancellationToken);
 
-        public virtual Task<TRole> FindByNameAsync(string normalizedName, CancellationToken token = default(CancellationToken))
+        public Task<TRole> FindByNameAsync(string normalizedName, CancellationToken cancellationToken)
 			=> _Roles.Find(r => r.NormalizedName == normalizedName)
-				.FirstOrDefaultAsync(token);
+				.FirstOrDefaultAsync(cancellationToken);
 
-        public virtual async Task<IList<Claim>> GetClaimsAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IList<Claim>> GetClaimsAsync(TRole role, CancellationToken cancellationToken)
             => role.Claims.Select(c => c.ToSecurityClaim()).ToList();
 
-        public virtual async Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken)
         {
             role.AddClaim(claim);
 
             await UpdateAsync(role, cancellationToken);
         }
 
-        public virtual async Task RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken)
         {
             role.RemoveClaim(claim);
 
             await UpdateAsync(role, cancellationToken);
         }
 
-        public virtual async Task<IdentityResult> ValidateAsync(RoleManager<TRole> manager, TRole role)
+        public async Task<IdentityResult> ValidateAsync(RoleManager<TRole> manager, TRole role)
         {
             var exists = await manager.RoleExistsAsync(role.NormalizedName);
 
-            return IdentityResult.Success;
+            if (result.IsAcknowledged)
+            {
+                return IdentityResult.Success;
+            }
+            else
+            {
+                return IdentityResult.Failed(new IdentityError());
+            }
         }
 
-        public virtual IQueryable<TRole> Roles
+        public IQueryable<TRole> Roles
 			=> _Roles.AsQueryable();
 	}
 }
