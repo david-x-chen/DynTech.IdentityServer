@@ -79,8 +79,8 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 		public async Task<string> GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken)
 			=> user.NormalizedUserName;
 
-		public async Task SetNormalizedUserNameAsync(TUser user, string normalizedUserName, CancellationToken cancellationToken)
-			=> user.NormalizedUserName = normalizedUserName;
+		public async Task SetNormalizedUserNameAsync(TUser user, string normalizedName, CancellationToken cancellationToken)
+			=> user.NormalizedUserName = normalizedName;
 
 		public Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
 			=> IsObjectId(userId)
@@ -113,11 +113,11 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
             return existingUser != null && !string.IsNullOrEmpty(existingUser.PasswordHash);
         }
 
-		public async Task AddToRoleAsync(TUser user, string normalizedRoleName, CancellationToken cancellationToken)
-			=> user.AddRole(normalizedRoleName);
+		public async Task AddToRoleAsync(TUser user, string roleName, CancellationToken cancellationToken)
+			=> user.AddRole(roleName);
 
-		public async Task RemoveFromRoleAsync(TUser user, string normalizedRoleName, CancellationToken cancellationToken)
-			=> user.RemoveRole(normalizedRoleName);
+		public async Task RemoveFromRoleAsync(TUser user, string roleName, CancellationToken cancellationToken)
+			=> user.RemoveRole(roleName);
 
 		// todo might have issue, I'm just storing Normalized only now, so I'm returning normalized here instead of not normalized.
 		// EF provider returns not noramlized here
@@ -126,8 +126,8 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 		public async Task<IList<string>> GetRolesAsync(TUser user, CancellationToken cancellationToken)
 			=> user.Roles;
 
-		public async Task<bool> IsInRoleAsync(TUser user, string normalizedRoleName, CancellationToken cancellationToken)
-			=> user.Roles.Contains(normalizedRoleName);
+		public async Task<bool> IsInRoleAsync(TUser user, string roleName, CancellationToken cancellationToken)
+			=> user.Roles.Contains(roleName);
 
 		public async Task<IList<TUser>> GetUsersInRoleAsync(string normalizedRoleName, CancellationToken cancellationToken)
 			=> await _Users.Find(u => u.Roles.Contains(normalizedRoleName))
@@ -136,7 +136,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 		public async Task AddLoginAsync(TUser user, UserLoginInfo login, CancellationToken cancellationToken)
 			=> user.AddLogin(login);
 
-		public async Task RemoveLoginAsync(TUser user, string loginProvider, string providerKey, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task RemoveLoginAsync(TUser user, string loginProvider, string providerKey, CancellationToken cancellationToken)
 			=> user.RemoveLogin(loginProvider, providerKey);
 
 		public async Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user, CancellationToken cancellationToken)
@@ -144,7 +144,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 				.Select(l => l.ToUserLoginInfo())
 				.ToList();
 
-		public Task<TUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken = default(CancellationToken))
+		public Task<TUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
 			=> _Users
 				.Find(u => u.Logins.Any(l => l.LoginProvider == loginProvider && l.ProviderKey == providerKey))
 				.FirstOrDefaultAsync(cancellationToken);
@@ -202,7 +202,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 			return Task.FromResult(0);
 		}
 
-		public async Task ReplaceClaimAsync(TUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ReplaceClaimAsync(TUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken)
 		{
 			user.ReplaceClaim(claim, newClaim);
 		}
@@ -240,7 +240,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 			return Task.FromResult(user.TwoFactorEnabled);
 		}
 
-		public async Task<IList<TUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<IList<TUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
 		{
 			return await _Users
 				.Find(u => u.Claims.Any(c => c.Type == claim.Type && c.Value == claim.Value))
@@ -310,18 +310,23 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
         public async Task<bool> RedeemCodeAsync(TUser user, string code, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-			ThrowIfDisposed();
+            ThrowIfDisposed();
 
-			if (user == null)
-			{
-				throw new ArgumentNullException(nameof(user));
-			}
-			if (code == null)
-			{
-				throw new ArgumentNullException(nameof(code));
-			}
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            if (code == null)
+            {
+                throw new ArgumentNullException(nameof(code));
+            }
 
-			var mergedCodes = await GetTokenAsync(user, InternalLoginProvider, RecoveryCodeTokenName, cancellationToken) ?? "";
+            return await RedeemCodeInternalAsync(user, code, cancellationToken);
+        }
+
+        private async Task<bool> RedeemCodeInternalAsync(TUser user, string code, CancellationToken cancellationToken)
+        {
+            var mergedCodes = await GetTokenAsync(user, InternalLoginProvider, RecoveryCodeTokenName, cancellationToken) ?? "";
 			var splitCodes = mergedCodes.Split(';');
 			if (splitCodes.Contains(code))
 			{
@@ -335,13 +340,19 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
         public async Task<int> CountCodesAsync(TUser user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-			ThrowIfDisposed();
+            ThrowIfDisposed();
 
-			if (user == null)
-			{
-				throw new ArgumentNullException(nameof(user));
-			}
-			var mergedCodes = await GetTokenAsync(user, InternalLoginProvider, RecoveryCodeTokenName, cancellationToken) ?? "";
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+
+            return await CountCodesInternalAsync(user, cancellationToken);
+        }
+
+        private async Task<int> CountCodesInternalAsync(TUser user, CancellationToken cancellationToken)
+        { 
+            var mergedCodes = await GetTokenAsync(user, InternalLoginProvider, RecoveryCodeTokenName, cancellationToken) ?? "";
 			if (mergedCodes.Length > 0)
 			{
 				return mergedCodes.Split(';').Length;
