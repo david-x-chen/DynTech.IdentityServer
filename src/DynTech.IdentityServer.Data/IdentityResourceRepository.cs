@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using DynTech.IdentityServer.Data.Interfaces;
 using IdentityServer4.MongoDB.Entities;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
 
@@ -25,16 +24,32 @@ namespace DynTech.IdentityServer.Data
         {
             _repository = new MongoRepository<IdentityResource>(connectionString, "IdentityResources");
 
-            //var pack = new ConventionPack();
-            //pack.Add(new CamelCaseElementNameConvention());
-            //pack.Add(new IgnoreIfNullConvention(true));
+            var pack = new ConventionPack();
+            pack.Add(new CamelCaseElementNameConvention());
+            pack.Add(new IgnoreIfNullConvention(true));
 
-            //ConventionRegistry.Register("camel case", pack, t => true);
+            ConventionRegistry.Register("camel case", pack, t => true);
 
         }
+
+        public Task GetResources()
+        {
+            ThrowIfDisposed();
+
+            return Task.FromResult(0);
+        }
+
         public void Dispose()
         {
             _disposed = true;
+
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // Cleanup
         }
 
         /// <summary>

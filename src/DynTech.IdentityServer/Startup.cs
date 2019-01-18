@@ -45,7 +45,7 @@ namespace DynTech.IdentityServer
             services.AddExternalIdentityProviders(Configuration);
 
             services.AddMvc().AddMetrics()
-                .SetCompatibilityVersion(CompatibilityVersion.Latest);;
+                .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
 

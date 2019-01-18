@@ -129,8 +129,8 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 		public async Task<bool> IsInRoleAsync(TUser user, string roleName, CancellationToken cancellationToken)
 			=> user.Roles.Contains(roleName);
 
-		public async Task<IList<TUser>> GetUsersInRoleAsync(string normalizedRoleName, CancellationToken cancellationToken)
-			=> await _Users.Find(u => u.Roles.Contains(normalizedRoleName))
+		public async Task<IList<TUser>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
+			=> await _Users.Find(u => u.Roles.Contains(roleName))
 				.ToListAsync(cancellationToken);
 
 		public async Task AddLoginAsync(TUser user, UserLoginInfo login, CancellationToken cancellationToken)
@@ -307,7 +307,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 			return SetTokenAsync(user, InternalLoginProvider, RecoveryCodeTokenName, mergedCodes, cancellationToken);
         }
 
-        public async Task<bool> RedeemCodeAsync(TUser user, string code, CancellationToken cancellationToken)
+        public Task<bool> RedeemCodeAsync(TUser user, string code, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -321,7 +321,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
                 throw new ArgumentNullException(nameof(code));
             }
 
-            return await RedeemCodeInternalAsync(user, code, cancellationToken);
+            return RedeemCodeInternalAsync(user, code, cancellationToken);
         }
 
         private async Task<bool> RedeemCodeInternalAsync(TUser user, string code, CancellationToken cancellationToken)
@@ -337,7 +337,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 			return false;
         }
 
-        public async Task<int> CountCodesAsync(TUser user, CancellationToken cancellationToken)
+        public Task<int> CountCodesAsync(TUser user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -347,7 +347,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
                 throw new ArgumentNullException(nameof(user));
             }
 
-            return await CountCodesInternalAsync(user, cancellationToken);
+            return CountCodesInternalAsync(user, cancellationToken);
         }
 
         private async Task<int> CountCodesInternalAsync(TUser user, CancellationToken cancellationToken)

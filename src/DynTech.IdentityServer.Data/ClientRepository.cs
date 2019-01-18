@@ -25,11 +25,11 @@ namespace DynTech.IdentityServer.Data
         {
             _repository = new MongoRepository<Client>(connectionString, "Clients");
 
-            //var pack = new ConventionPack();
-            //pack.Add(new CamelCaseElementNameConvention());
-            //pack.Add(new IgnoreIfNullConvention(true));
+            var pack = new ConventionPack();
+            pack.Add(new CamelCaseElementNameConvention());
+            pack.Add(new IgnoreIfNullConvention(true));
 
-            //ConventionRegistry.Register("camel case", pack, t => true);
+            ConventionRegistry.Register("camel case", pack, t => true);
 
         }
 
