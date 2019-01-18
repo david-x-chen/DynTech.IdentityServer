@@ -84,21 +84,21 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 			=> _Roles.Find(r => r.Id == roleId)
 				.FirstOrDefaultAsync(cancellationToken);
 
-        public Task<TRole> FindByNameAsync(string normalizedName, CancellationToken cancellationToken)
-			=> _Roles.Find(r => r.NormalizedName == normalizedName)
+        public Task<TRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
+			=> _Roles.Find(r => r.NormalizedName == normalizedRoleName)
 				.FirstOrDefaultAsync(cancellationToken);
 
-        public async Task<IList<Claim>> GetClaimsAsync(TRole role, CancellationToken cancellationToken)
+        public async Task<IList<Claim>> GetClaimsAsync(TRole role, CancellationToken cancellationToken = default(CancellationToken))
             => role.Claims.Select(c => c.ToSecurityClaim()).ToList();
 
-        public async Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken)
+        public async Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default(CancellationToken))
         {
             role.AddClaim(claim);
 
             await UpdateAsync(role, cancellationToken);
         }
 
-        public async Task RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken)
+        public async Task RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default(CancellationToken))
         {
             role.RemoveClaim(claim);
 

@@ -16,10 +16,10 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 	using global::MongoDB.Driver;
 
 	/// <summary>
-	///     When passing a cancellation token, it will only be used if the operation requires a database interaction.
+	///     When passing a cancellation cancellationToken, it will only be used if the operation requires a database interaction.
 	/// </summary>
 	/// <typeparam name="TUser"></typeparam>
-    public class UserStore<TUser> : IMongoUserStore<TUser>
+    public sealed class UserStore<TUser> : IMongoUserStore<TUser>
         where TUser : IdentityUser
     {
 		private readonly IMongoCollection<TUser> _Users;
@@ -34,57 +34,57 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 
 		private bool _disposed = false;
 
-		/// <summary>
-		///     Dispose the store
-		/// </summary>
-		public void Dispose()
-		{
-			_disposed = true;
-		}
+        /// <summary>
+        ///     Dispose the store
+        /// </summary>
+        public void Dispose()
+        {
+            _disposed = true;
+        }
 
-		public virtual async Task<IdentityResult> CreateAsync(TUser user, CancellationToken token)
+        public async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken)
 		{
             var hasher = new PasswordHasher<TUser>();
             user.PasswordHash = hasher.HashPassword(user, user.PasswordHash);
 
-            await _Users.InsertOneAsync(user, cancellationToken: token);
+            await _Users.InsertOneAsync(user, cancellationToken: cancellationToken);
 			return IdentityResult.Success;
 		}
 
-		public virtual async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken token)
+		public async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken)
 		{
 			// todo should add an optimistic concurrency check
-			await _Users.ReplaceOneAsync(u => u.Id == user.Id, user, cancellationToken: token);
+			await _Users.ReplaceOneAsync(u => u.Id == user.Id, user, cancellationToken: cancellationToken);
 			// todo success based on replace result
 			return IdentityResult.Success;
 		}
 
-		public virtual async Task<IdentityResult> DeleteAsync(TUser user, CancellationToken token)
+		public async Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken)
 		{
-			await _Users.DeleteOneAsync(u => u.Id == user.Id, token);
+			await _Users.DeleteOneAsync(u => u.Id == user.Id, cancellationToken);
 			// todo success based on delete result
 			return IdentityResult.Success;
 		}
 
-		public virtual async Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken)
+		public async Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken)
 			=> user.Id;
 
-		public virtual async Task<string> GetUserNameAsync(TUser user, CancellationToken cancellationToken)
+		public async Task<string> GetUserNameAsync(TUser user, CancellationToken cancellationToken)
 			=> user.UserName;
 
-		public virtual async Task SetUserNameAsync(TUser user, string userName, CancellationToken cancellationToken)
+		public async Task SetUserNameAsync(TUser user, string userName, CancellationToken cancellationToken)
 			=> user.UserName = userName;
 
 		// note: again this isn't used by Identity framework so no way to integration test it
-		public virtual async Task<string> GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken)
+		public async Task<string> GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken)
 			=> user.NormalizedUserName;
 
-		public virtual async Task SetNormalizedUserNameAsync(TUser user, string normalizedUserName, CancellationToken cancellationToken)
+		public async Task SetNormalizedUserNameAsync(TUser user, string normalizedUserName, CancellationToken cancellationToken)
 			=> user.NormalizedUserName = normalizedUserName;
 
-		public virtual Task<TUser> FindByIdAsync(string userId, CancellationToken token)
+		public Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
 			=> IsObjectId(userId)
-				? _Users.Find(u => u.Id == userId).FirstOrDefaultAsync(token)
+				? _Users.Find(u => u.Id == userId).FirstOrDefaultAsync(cancellationToken)
 				: Task.FromResult<TUser>(null);
 
 		private bool IsObjectId(string id)
@@ -93,17 +93,17 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 			return ObjectId.TryParse(id, out temp);
 		}
 
-		public virtual Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken token)
+		public Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
 			// todo low priority exception on duplicates? or better to enforce unique index to ensure this
-			=> _Users.Find(u => u.NormalizedUserName == normalizedUserName).FirstOrDefaultAsync(token);
+			=> _Users.Find(u => u.NormalizedUserName == normalizedUserName).FirstOrDefaultAsync(cancellationToken);
 
-		public virtual async Task SetPasswordHashAsync(TUser user, string passwordHash, CancellationToken token)
+		public async Task SetPasswordHashAsync(TUser user, string passwordHash, CancellationToken cancellationToken)
 			=> user.PasswordHash = passwordHash;
 
-		public virtual async Task<string> GetPasswordHashAsync(TUser user, CancellationToken token)
+		public async Task<string> GetPasswordHashAsync(TUser user, CancellationToken cancellationToken)
 			=> user.PasswordHash;
 
-		public virtual async Task<bool> HasPasswordAsync(TUser user, CancellationToken token)
+		public async Task<bool> HasPasswordAsync(TUser user, CancellationToken cancellationToken)
         {
             var builder = new FilterDefinitionBuilder<TUser>();
             var filter = builder.Eq(u => u.NormalizedEmail, user.NormalizedEmail);
@@ -113,78 +113,78 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
             return existingUser != null && !string.IsNullOrEmpty(existingUser.PasswordHash);
         }
 
-		public virtual async Task AddToRoleAsync(TUser user, string normalizedRoleName, CancellationToken token)
+		public async Task AddToRoleAsync(TUser user, string normalizedRoleName, CancellationToken cancellationToken)
 			=> user.AddRole(normalizedRoleName);
 
-		public virtual async Task RemoveFromRoleAsync(TUser user, string normalizedRoleName, CancellationToken token)
+		public async Task RemoveFromRoleAsync(TUser user, string normalizedRoleName, CancellationToken cancellationToken)
 			=> user.RemoveRole(normalizedRoleName);
 
 		// todo might have issue, I'm just storing Normalized only now, so I'm returning normalized here instead of not normalized.
 		// EF provider returns not noramlized here
 		// however, the rest of the API uses normalized (add/remove/isinrole) so maybe this approach is better anyways
 		// note: could always map normalized to not if people complain
-		public virtual async Task<IList<string>> GetRolesAsync(TUser user, CancellationToken token)
+		public async Task<IList<string>> GetRolesAsync(TUser user, CancellationToken cancellationToken)
 			=> user.Roles;
 
-		public virtual async Task<bool> IsInRoleAsync(TUser user, string normalizedRoleName, CancellationToken token)
+		public async Task<bool> IsInRoleAsync(TUser user, string normalizedRoleName, CancellationToken cancellationToken)
 			=> user.Roles.Contains(normalizedRoleName);
 
-		public virtual async Task<IList<TUser>> GetUsersInRoleAsync(string normalizedRoleName, CancellationToken token)
+		public async Task<IList<TUser>> GetUsersInRoleAsync(string normalizedRoleName, CancellationToken cancellationToken)
 			=> await _Users.Find(u => u.Roles.Contains(normalizedRoleName))
-				.ToListAsync(token);
+				.ToListAsync(cancellationToken);
 
-		public virtual async Task AddLoginAsync(TUser user, UserLoginInfo login, CancellationToken token)
+		public async Task AddLoginAsync(TUser user, UserLoginInfo login, CancellationToken cancellationToken)
 			=> user.AddLogin(login);
 
-		public virtual async Task RemoveLoginAsync(TUser user, string loginProvider, string providerKey, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task RemoveLoginAsync(TUser user, string loginProvider, string providerKey, CancellationToken cancellationToken = default(CancellationToken))
 			=> user.RemoveLogin(loginProvider, providerKey);
 
-		public virtual async Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user, CancellationToken token)
+		public async Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user, CancellationToken cancellationToken)
 			=> user.Logins
 				.Select(l => l.ToUserLoginInfo())
 				.ToList();
 
-		public virtual Task<TUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken = default(CancellationToken))
+		public Task<TUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken = default(CancellationToken))
 			=> _Users
 				.Find(u => u.Logins.Any(l => l.LoginProvider == loginProvider && l.ProviderKey == providerKey))
 				.FirstOrDefaultAsync(cancellationToken);
 
-		public virtual async Task SetSecurityStampAsync(TUser user, string stamp, CancellationToken token)
+		public async Task SetSecurityStampAsync(TUser user, string stamp, CancellationToken cancellationToken)
 			=> user.SecurityStamp = stamp;
 
-		public virtual async Task<string> GetSecurityStampAsync(TUser user, CancellationToken token)
+		public async Task<string> GetSecurityStampAsync(TUser user, CancellationToken cancellationToken)
 			=> user.SecurityStamp;
 
-		public virtual async Task<bool> GetEmailConfirmedAsync(TUser user, CancellationToken token)
+		public async Task<bool> GetEmailConfirmedAsync(TUser user, CancellationToken cancellationToken)
 			=> user.EmailConfirmed;
 
-		public virtual async Task SetEmailConfirmedAsync(TUser user, bool confirmed, CancellationToken token)
+		public async Task SetEmailConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken)
 			=> user.EmailConfirmed = confirmed;
 
-		public virtual async Task SetEmailAsync(TUser user, string email, CancellationToken token)
+		public async Task SetEmailAsync(TUser user, string email, CancellationToken cancellationToken)
 			=> user.Email = email;
 
-		public virtual async Task<string> GetEmailAsync(TUser user, CancellationToken token)
+		public async Task<string> GetEmailAsync(TUser user, CancellationToken cancellationToken)
 			=> user.Email;
 
 		// note: no way to intergation test as this isn't used by Identity framework	
-		public virtual async Task<string> GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken)
+		public async Task<string> GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken)
 			=> user.NormalizedEmail;
 
-		public virtual async Task SetNormalizedEmailAsync(TUser user, string normalizedEmail, CancellationToken cancellationToken)
+		public async Task SetNormalizedEmailAsync(TUser user, string normalizedEmail, CancellationToken cancellationToken)
 			=> user.NormalizedEmail = normalizedEmail;
 
-		public virtual Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken token)
+		public Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
 		{
 			// note: I don't like that this now searches on normalized email :(... why not FindByNormalizedEmailAsync then?
 			// todo low - what if a user can have multiple accounts with the same email?
-			return _Users.Find(u => u.NormalizedEmail == normalizedEmail).FirstOrDefaultAsync(token);
+			return _Users.Find(u => u.NormalizedEmail == normalizedEmail).FirstOrDefaultAsync(cancellationToken);
 		}
 
-		public virtual async Task<IList<Claim>> GetClaimsAsync(TUser user, CancellationToken token)
+		public async Task<IList<Claim>> GetClaimsAsync(TUser user, CancellationToken cancellationToken)
 			=> user.Claims.Select(c => c.ToSecurityClaim()).ToList();
 
-		public virtual Task AddClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken token)
+		public Task AddClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
 		{
 			foreach (var claim in claims)
 			{
@@ -193,7 +193,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 			return Task.FromResult(0);
 		}
 
-		public virtual Task RemoveClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken token)
+		public Task RemoveClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
 		{
 			foreach (var claim in claims)
 			{
@@ -202,112 +202,112 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 			return Task.FromResult(0);
 		}
 
-		public virtual async Task ReplaceClaimAsync(TUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task ReplaceClaimAsync(TUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			user.ReplaceClaim(claim, newClaim);
 		}
 
-		public virtual Task SetPhoneNumberAsync(TUser user, string phoneNumber, CancellationToken token)
+		public Task SetPhoneNumberAsync(TUser user, string phoneNumber, CancellationToken cancellationToken)
 		{
 			user.PhoneNumber = phoneNumber;
 			return Task.FromResult(0);
 		}
 
-		public virtual Task<string> GetPhoneNumberAsync(TUser user, CancellationToken token)
+		public Task<string> GetPhoneNumberAsync(TUser user, CancellationToken cancellationToken)
 		{
 			return Task.FromResult(user.PhoneNumber);
 		}
 
-		public virtual Task<bool> GetPhoneNumberConfirmedAsync(TUser user, CancellationToken token)
+		public Task<bool> GetPhoneNumberConfirmedAsync(TUser user, CancellationToken cancellationToken)
 		{
 			return Task.FromResult(user.PhoneNumberConfirmed);
 		}
 
-		public virtual Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed, CancellationToken token)
+		public Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken)
 		{
 			user.PhoneNumberConfirmed = confirmed;
 			return Task.FromResult(0);
 		}
 
-		public virtual Task SetTwoFactorEnabledAsync(TUser user, bool enabled, CancellationToken token)
+		public Task SetTwoFactorEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken)
 		{
 			user.TwoFactorEnabled = enabled;
 			return Task.FromResult(0);
 		}
 
-		public virtual Task<bool> GetTwoFactorEnabledAsync(TUser user, CancellationToken token)
+		public Task<bool> GetTwoFactorEnabledAsync(TUser user, CancellationToken cancellationToken)
 		{
 			return Task.FromResult(user.TwoFactorEnabled);
 		}
 
-		public virtual async Task<IList<TUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken = default(CancellationToken))
+		public async Task<IList<TUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken = default(CancellationToken))
 		{
 			return await _Users
 				.Find(u => u.Claims.Any(c => c.Type == claim.Type && c.Value == claim.Value))
 				.ToListAsync(cancellationToken);
 		}
 
-		public virtual Task<DateTimeOffset?> GetLockoutEndDateAsync(TUser user, CancellationToken token)
+		public Task<DateTimeOffset?> GetLockoutEndDateAsync(TUser user, CancellationToken cancellationToken)
 		{
 			DateTimeOffset? dateTimeOffset = user.LockoutEndDateUtc;
 			return Task.FromResult(dateTimeOffset);
 		}
 
-		public virtual Task SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd, CancellationToken token)
+		public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
 		{
 			user.LockoutEndDateUtc = lockoutEnd?.UtcDateTime;
 			return Task.FromResult(0);
 		}
 
-		public virtual Task<int> IncrementAccessFailedCountAsync(TUser user, CancellationToken token)
+		public Task<int> IncrementAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
 		{
 			user.AccessFailedCount++;
 			return Task.FromResult(user.AccessFailedCount);
 		}
 
-		public virtual Task ResetAccessFailedCountAsync(TUser user, CancellationToken token)
+		public Task ResetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
 		{
 			user.AccessFailedCount = 0;
 			return Task.FromResult(0);
 		}
 
-		public virtual async Task<int> GetAccessFailedCountAsync(TUser user, CancellationToken token)
+		public async Task<int> GetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
 			=> user.AccessFailedCount;
 
-		public virtual async Task<bool> GetLockoutEnabledAsync(TUser user, CancellationToken token)
+		public async Task<bool> GetLockoutEnabledAsync(TUser user, CancellationToken cancellationToken)
 			=> user.LockoutEnabled;
 
-		public virtual async Task SetLockoutEnabledAsync(TUser user, bool enabled, CancellationToken token)
+		public async Task SetLockoutEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken)
 			=> user.LockoutEnabled = enabled;
 
-		public virtual IQueryable<TUser> Users => _Users.AsQueryable();
+		public IQueryable<TUser> Users => _Users.AsQueryable();
 
-		public virtual async Task SetTokenAsync(TUser user, string loginProvider, string name, string value, CancellationToken cancellationToken)
+		public async Task SetTokenAsync(TUser user, string loginProvider, string name, string value, CancellationToken cancellationToken)
 			=> user.SetToken(loginProvider, name, value);
 
-		public virtual async Task RemoveTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken)
+		public async Task RemoveTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken)
 			=> user.RemoveToken(loginProvider, name);
 
-		public virtual async Task<string> GetTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken)
+		public async Task<string> GetTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken)
 			=> user.GetTokenValue(loginProvider, name);
 
-        public virtual async Task SetAuthenticatorKeyAsync(TUser user, string key, CancellationToken cancellationToken)
+        public async Task SetAuthenticatorKeyAsync(TUser user, string key, CancellationToken cancellationToken)
         {
             await SetTokenAsync(user, InternalLoginProvider, AuthenticatorKeyTokenName, key, cancellationToken);
         }
 
-        public virtual async Task<string> GetAuthenticatorKeyAsync(TUser user, CancellationToken cancellationToken)
+        public async Task<string> GetAuthenticatorKeyAsync(TUser user, CancellationToken cancellationToken)
         {
            return await GetTokenAsync(user, InternalLoginProvider, AuthenticatorKeyTokenName, cancellationToken);
         }
 
-        public virtual Task ReplaceCodesAsync(TUser user, IEnumerable<string> recoveryCodes, CancellationToken cancellationToken)
+        public Task ReplaceCodesAsync(TUser user, IEnumerable<string> recoveryCodes, CancellationToken cancellationToken)
         {
             var mergedCodes = string.Join(";", recoveryCodes);
 			return SetTokenAsync(user, InternalLoginProvider, RecoveryCodeTokenName, mergedCodes, cancellationToken);
         }
 
-        public virtual async Task<bool> RedeemCodeAsync(TUser user, string code, CancellationToken cancellationToken)
+        public async Task<bool> RedeemCodeAsync(TUser user, string code, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfDisposed();
@@ -332,7 +332,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 			return false;
         }
 
-        public virtual async Task<int> CountCodesAsync(TUser user, CancellationToken cancellationToken)
+        public async Task<int> CountCodesAsync(TUser user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 			ThrowIfDisposed();
