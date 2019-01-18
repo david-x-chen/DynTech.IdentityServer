@@ -109,7 +109,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
         {
             var exists = await manager.RoleExistsAsync(role.NormalizedName);
 
-            if (result.IsAcknowledged)
+            if (exists)
             {
                 return IdentityResult.Success;
             }
