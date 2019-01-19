@@ -32,31 +32,24 @@ namespace DynTech.IdentityServer.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
 
-        private readonly IIdentityServerInteractionService _interaction;
-        private readonly AccountService _account;
+        private readonly IAccountService _account;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Controllers.AccountController"/> class.
         /// </summary>
         /// <param name="userManager">User manager.</param>
+        /// <param name="roleManager">role Manager.</param>
         /// <param name="signInManager">Sign in manager.</param>
         /// <param name="emailSender">Email sender.</param>
         /// <param name="logger">Logger.</param>
-        /// <param name="interaction">Interaction.</param>
-        /// <param name="clientStore">Client store.</param>
-        /// <param name="httpContextAccessor">Http context accessor.</param>
-        /// <param name="schemeProvider">Scheme provider.</param>
-        /// <param name="roleManager">role Manager.</param>
+        /// <param name="account">account service.</param>
         public AccountController(
             UserManager<ApplicationUser> userManager,
             RoleManager<MongoIdentity.IdentityRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ILogger<AccountController> logger,
-            IIdentityServerInteractionService interaction,
-            IClientStore clientStore,
-            IHttpContextAccessor httpContextAccessor,
-            IAuthenticationSchemeProvider schemeProvider
+            IAccountService account
         )
         {
             _userManager = userManager;
@@ -64,9 +57,7 @@ namespace DynTech.IdentityServer.Controllers
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
-
-            _interaction = interaction;
-            _account = new AccountService(interaction, httpContextAccessor, schemeProvider, clientStore);
+            _account = account;
         }
 
         /// <summary>
@@ -149,7 +140,7 @@ namespace DynTech.IdentityServer.Controllers
 
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load two-factor authentication user.");
+                throw new ArgumentNullException($"Unable to load two-factor authentication user.");
             }
 
             var model = new LoginWith2faViewModel { RememberMe = rememberMe };
@@ -178,7 +169,7 @@ namespace DynTech.IdentityServer.Controllers
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID.");
+                throw new ArgumentNullException($"Unable to load user with ID.");
             }
 
             var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
@@ -216,7 +207,7 @@ namespace DynTech.IdentityServer.Controllers
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load two-factor authentication user.");
+                throw new ArgumentNullException($"Unable to load two-factor authentication user.");
             }
 
             ViewData["ReturnUrl"] = returnUrl;
@@ -243,7 +234,7 @@ namespace DynTech.IdentityServer.Controllers
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load two-factor authentication user.");
+                throw new ArgumentNullException($"Unable to load two-factor authentication user.");
             }
 
             var recoveryCode = model.RecoveryCode.Replace(" ", string.Empty);
@@ -461,7 +452,7 @@ namespace DynTech.IdentityServer.Controllers
                 var info = await _signInManager.GetExternalLoginInfoAsync();
                 if (info == null)
                 {
-                    throw new ApplicationException("Error loading external login information during confirmation.");
+                    throw new ArgumentNullException("Error loading external login information during confirmation.");
                 }
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
@@ -499,7 +490,7 @@ namespace DynTech.IdentityServer.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                throw new ApplicationException($"Unable to load user with ID '{userId}'.");
+                throw new ArgumentNullException($"Unable to load user with ID '{userId}'.");
             }
             var result = await _userManager.ConfirmEmailAsync(user, code);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
@@ -570,7 +561,7 @@ namespace DynTech.IdentityServer.Controllers
         {
             if (code == null)
             {
-                throw new ApplicationException("A code must be supplied for password reset.");
+                throw new ArgumentNullException("A code must be supplied for password reset.");
             }
             var model = new ResetPasswordViewModel { Code = code };
             return View(model);

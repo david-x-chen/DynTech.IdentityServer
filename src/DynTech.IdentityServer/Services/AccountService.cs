@@ -14,7 +14,7 @@ namespace DynTech.IdentityServer.Services
     /// <summary>
     /// Account service.
     /// </summary>
-    public class AccountService
+    public class AccountService: IAccountService
     {
         private readonly IClientStore _clientStore;
         private readonly IIdentityServerInteractionService _interaction;

@@ -131,7 +131,7 @@ namespace DynTech.IdentityServer
             
             services.AddSingleton<IClientRepository>(new ClientRepository(connectionStr));
             services.AddSingleton<IIdentityResourceRepository>(new IdentityResourceRepository(connectionStr));
-            
+            services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IAppVersionService, AppVersionService>();
 
             return services;
