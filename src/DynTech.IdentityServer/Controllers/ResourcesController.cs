@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DynTech.IdentityServer.Data.Interfaces;
 using DynTech.IdentityServer.Models.ResourceModels;
 using IdentityServer4.MongoDB.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -15,15 +14,12 @@ namespace DynTech.IdentityServer.Controllers
     [Route("[controller]/[action]")]
     public class ResourcesController: Controller
     {
-        private readonly IIdentityResourceRepository _idResRepo;
         private readonly IConfigurationDbContext _context;        
         private readonly ILogger _logger;
 
-        public ResourcesController(IIdentityResourceRepository idResRepo,
-                                IConfigurationDbContext context,
+        public ResourcesController(IConfigurationDbContext context,
                                 ILogger<ResourcesController> logger)
         {
-            _idResRepo = idResRepo;
             _context = context;
             _logger = logger;
         }

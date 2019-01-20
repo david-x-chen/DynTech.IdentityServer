@@ -9,10 +9,9 @@ using DynTech.IdentityServer.Models;
 using System;
 using Serilog;
 using System.Linq;
-using DynTech.IdentityServer.Data;
-using DynTech.IdentityServer.Data.Interfaces;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using DynTech.IdentityServer.Data;
 
 namespace DynTech.IdentityServer
 {
@@ -129,8 +128,6 @@ namespace DynTech.IdentityServer
                 .AddProfileService<UserClaimsProfileService>()
                 .AddAspNetIdentity<ApplicationUser>();
             
-            services.AddSingleton<IClientRepository>(new ClientRepository(connectionStr));
-            services.AddSingleton<IIdentityResourceRepository>(new IdentityResourceRepository(connectionStr));
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IAppVersionService, AppVersionService>();
 

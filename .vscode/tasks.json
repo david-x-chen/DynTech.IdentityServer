@@ -7,7 +7,7 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}/src/DynTech.IdentityServer/project.json"
+                "${workspaceRoot}/src/DynTech.IdentityServer/DynTech.IdentityServer.csproj"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"

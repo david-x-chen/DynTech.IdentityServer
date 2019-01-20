@@ -6,8 +6,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynTech.IdentityServer", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AspNetCore.Identity.MongoDB", "src\Microsoft.AspNetCore.Identity.MongoDB\Microsoft.AspNetCore.Identity.MongoDB.csproj", "{994F9DCA-2898-466A-A40A-021EA2200351}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynTech.IdentityServer.Data", "src\DynTech.IdentityServer.Data\DynTech.IdentityServer.Data.csproj", "{5B2B6BDE-5507-4790-B885-4813FE5BD502}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynTech.IdentityServer.Test", "test\DynTech.IdentityServer.Test\DynTech.IdentityServer.Test.csproj", "{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.MongoDB", "src\IdentityServer4.MongoDB\IdentityServer4.MongoDB.csproj", "{0824A4EF-0E85-477F-A43C-12C268B9B271}"
@@ -26,10 +24,6 @@ Global
 		{994F9DCA-2898-466A-A40A-021EA2200351}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{994F9DCA-2898-466A-A40A-021EA2200351}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{994F9DCA-2898-466A-A40A-021EA2200351}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5B2B6BDE-5507-4790-B885-4813FE5BD502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B2B6BDE-5507-4790-B885-4813FE5BD502}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B2B6BDE-5507-4790-B885-4813FE5BD502}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B2B6BDE-5507-4790-B885-4813FE5BD502}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8873FD7-3135-4721-9CCF-7F508B3A6E9D}.Release|Any CPU.ActiveCfg = Release|Any CPU

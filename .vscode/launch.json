@@ -6,9 +6,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/DynTech.IdentityServer/bin/Debug/netcoreapp2.1/DynTech.IdentityServer.dll",
+            "program": "${workspaceRoot}/src/DynTech.IdentityServer/bin/Debug/netcoreapp2.2/DynTech.IdentityServer.dll",
             "args": [],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}/src/DynTech.IdentityServer/",
             "stopAtEntry": false,
             "launchBrowser": {
                 "enabled": true,
@@ -25,7 +25,9 @@
                 }
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "http://*:5000",
+                "ASPNETCORE_CONTENTROOT": "${cwd}"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceRoot}/Views"
@@ -36,7 +38,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/DynTech.IdentityServer/bin/Debug/netcoreapp2.1/DynTech.IdentityServer.dll",
+            "program": "${workspaceRoot}/src/DynTech.IdentityServer/bin/Debug/netcoreapp2.2/DynTech.IdentityServer.dll",
             "args": [],
             "cwd": "${workspaceRoot}",
             "externalConsole": false,

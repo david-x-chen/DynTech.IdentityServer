@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DynTech.IdentityServer.Data.Interfaces;
 using DynTech.IdentityServer.Models;
 using DynTech.IdentityServer.Models.ClientViewModels;
 using IdentityServer4.Models;
@@ -26,7 +25,6 @@ namespace DynTech.IdentityServer.Controllers
         private readonly IConfigurationDbContext _context;
         private readonly IClientStore _clients;
         private readonly ILogger _logger;
-        private readonly IClientRepository _clientRepo;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Controllers.ClientsController"/> class.
@@ -35,18 +33,15 @@ namespace DynTech.IdentityServer.Controllers
         /// <param name="context">Context.</param>
         /// <param name="logger">Logger.</param>
         /// <param name="userManager">user Manager.</param>
-        /// <param name="clientRepo"></param>
         public ClientsController(IClientStore clients,
                                  IConfigurationDbContext context,
                                  ILogger<ClientsController> logger,
-                                 UserManager<ApplicationUser> userManager,
-                                 IClientRepository clientRepo)
+                                 UserManager<ApplicationUser> userManager)
         {
             _clients = clients;
             _context = context;
             _logger = logger;
             _userManager = userManager;
-            _clientRepo = clientRepo;
         }
 
         /// <summary>
@@ -155,7 +150,7 @@ namespace DynTech.IdentityServer.Controllers
                     client = clientModel.ToEntity();
                     client.Id = id;
 
-                    await _clientRepo.UpsertClient(client);
+                    await _context.AddClient(client);
                 }
 
                 var currentUser = await _userManager.GetUserAsync(HttpContext.User);

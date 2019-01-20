@@ -105,6 +105,7 @@ namespace DynTech.IdentityServer.Data.Seeding
             }
 
             var envVar = Environment.GetEnvironmentVariables();
+            var init_admin_pwd = envVar["INIT_ADMIN_PWD"] != null ? envVar["INIT_ADMIN_PWD"].ToString() : string.Empty;
 
             var user = new ApplicationUser()
             {
@@ -112,7 +113,7 @@ namespace DynTech.IdentityServer.Data.Seeding
                 Email = "idsrv_admin@dyntech.solutions",
                 EmailConfirmed = true,
                 IsAdmin = true,
-                PasswordHash = envVar["INIT_ADMIN_PWD"].ToString(),
+                PasswordHash = init_admin_pwd,
             };
 
             var existing = await userManager.FindByEmailAsync(user.Email);
