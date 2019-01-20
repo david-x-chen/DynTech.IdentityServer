@@ -76,7 +76,7 @@ namespace DynTech.IdentityServer
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler(Configuration["AppURLs:ErrorPage"]);
             }
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions

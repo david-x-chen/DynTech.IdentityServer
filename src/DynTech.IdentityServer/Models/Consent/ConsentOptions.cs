@@ -3,7 +3,7 @@ namespace DynTech.IdentityServer.Models.Consent
     /// <summary>
     /// Consent options.
     /// </summary>
-    public class ConsentOptions
+    public static class ConsentOptions
     {
         /// <summary>
         /// The enable offline access.
