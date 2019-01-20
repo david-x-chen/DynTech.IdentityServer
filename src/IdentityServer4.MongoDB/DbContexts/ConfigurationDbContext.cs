@@ -30,10 +30,34 @@ namespace IdentityServer4.MongoDB.DbContexts
         private void CreateIndexes()
         {
             var indexOptions = new CreateIndexOptions() { Background = true };
-            _clients.Indexes.CreateOne(Builders<Client>.IndexKeys.Ascending(_ => _.ClientId), indexOptions);
-            _identityResources.Indexes.CreateOne(Builders<IdentityResource>.IndexKeys.Ascending(_ => _.Name), indexOptions);
-            _apiResources.Indexes.CreateOne(Builders<ApiResource>.IndexKeys.Ascending(_ => _.Name), indexOptions);
-            _apiResources.Indexes.CreateOne(Builders<ApiResource>.IndexKeys.Ascending(_ => _.Scopes), indexOptions);
+
+            _clients.Indexes.CreateOne(
+                new CreateIndexModel<Client>(
+                    Builders<Client>.IndexKeys.Ascending(_ => _.ClientId), 
+                    indexOptions
+                )
+            );
+            
+            _identityResources.Indexes.CreateOne(
+                new CreateIndexModel<IdentityResource>(
+                    Builders<IdentityResource>.IndexKeys.Ascending(_ => _.Name), 
+                    indexOptions
+                )
+            );
+
+            _apiResources.Indexes.CreateOne(
+                new CreateIndexModel<ApiResource>(
+                    Builders<ApiResource>.IndexKeys.Ascending(_ => _.Name), 
+                    indexOptions
+                )
+            );
+
+            _apiResources.Indexes.CreateOne(
+                new CreateIndexModel<ApiResource>(
+                    Builders<ApiResource>.IndexKeys.Ascending(_ => _.Scopes), 
+                    indexOptions
+                )
+            );
         }
 
         public IQueryable<Client> Clients

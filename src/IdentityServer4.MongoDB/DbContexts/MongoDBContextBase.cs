@@ -8,10 +8,11 @@ namespace IdentityServer4.MongoDB.DbContexts
     public class MongoDBContextBase : IDisposable
     {
         private readonly IMongoDatabase _database;
-        private readonly IMongoClient _client;
         
         public MongoDBContextBase(IOptions<MongoDBConfiguration> settings)
         {
+            IMongoClient _client;
+
             if (settings.Value == null)
                 throw new ArgumentNullException(nameof(settings), "MongoDBConfiguration cannot be null.");
 
@@ -43,7 +44,13 @@ namespace IdentityServer4.MongoDB.DbContexts
 
         public void Dispose()
         { 
-            // TODO
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            // Cleanup
         }
     }
 }

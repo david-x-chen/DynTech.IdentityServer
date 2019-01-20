@@ -16,7 +16,7 @@ namespace IdentityServer4.MongoDB.DbContexts
 {
     public class PersistedGrantDbContext : MongoDBContextBase, IPersistedGrantDbContext
     {
-        private IMongoCollection<PersistedGrant> _persistedGrants;
+        private readonly IMongoCollection<PersistedGrant> _persistedGrants;
 
         public PersistedGrantDbContext(IOptions<MongoDBConfiguration> settings)
             : base(settings)
@@ -30,18 +30,38 @@ namespace IdentityServer4.MongoDB.DbContexts
             var indexOptions = new CreateIndexOptions() { Background = true };
             var persistedGrandIndexKeys = Builders<PersistedGrant>.IndexKeys;
             
-            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Ascending(_ => _.Key), indexOptions);
+            _persistedGrants.Indexes.CreateOne(
+                new CreateIndexModel<PersistedGrant>(
+                    persistedGrandIndexKeys.Ascending(_ => _.Key),
+                    indexOptions
+                )
+            );
 
-            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Ascending(_ => _.SubjectId), indexOptions);
+            _persistedGrants.Indexes.CreateOne(
+                new CreateIndexModel<PersistedGrant>(
+                    persistedGrandIndexKeys.Ascending(_ => _.SubjectId), 
+                    indexOptions
+                )
+            );
             
-            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Combine(
-                persistedGrandIndexKeys.Ascending(_ => _.ClientId),
-                persistedGrandIndexKeys.Ascending(_ => _.SubjectId)));
+            _persistedGrants.Indexes.CreateOne(
+                new CreateIndexModel<PersistedGrant>(
+                    persistedGrandIndexKeys.Combine(
+                        persistedGrandIndexKeys.Ascending(_ => _.ClientId),
+                        persistedGrandIndexKeys.Ascending(_ => _.SubjectId)
+                    )
+                )
+            );
             
-            _persistedGrants.Indexes.CreateOne(persistedGrandIndexKeys.Combine(
-                persistedGrandIndexKeys.Ascending(_ => _.ClientId),
-                persistedGrandIndexKeys.Ascending(_ => _.SubjectId),
-                persistedGrandIndexKeys.Ascending(_ => _.Type)));
+            _persistedGrants.Indexes.CreateOne(
+                new CreateIndexModel<PersistedGrant>(
+                    persistedGrandIndexKeys.Combine(
+                        persistedGrandIndexKeys.Ascending(_ => _.ClientId),
+                        persistedGrandIndexKeys.Ascending(_ => _.SubjectId),
+                        persistedGrandIndexKeys.Ascending(_ => _.Type)
+                    )
+                )
+            );
         }
 
         public IQueryable<PersistedGrant> PersistedGrants
