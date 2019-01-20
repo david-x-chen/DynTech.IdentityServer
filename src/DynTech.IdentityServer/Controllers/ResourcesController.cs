@@ -26,7 +26,7 @@ namespace DynTech.IdentityServer.Controllers
 
         public async Task<IActionResult> IdResList()
         {
-            var resList = _context.IdentityResources.ToList()
+            var resList = _context.IdentityResources.AsEnumerable()
                                      .Select(rm => {
                                           return new IdentityResourceViewModel
                                           {
@@ -51,7 +51,7 @@ namespace DynTech.IdentityServer.Controllers
         {
             _logger.LogInformation("Load api resources...");
 
-            var resList = _context.ApiResources.ToList()
+            var resList = _context.ApiResources.AsEnumerable()
                                      .Select(rm => {
                                           return new IdentityResourceViewModel
                                           {

@@ -78,7 +78,7 @@ namespace IdentityServer4.MongoDB
                     break;
                 }
 
-                ClearTokens();
+                await ClearTokens();
             }
         }
 

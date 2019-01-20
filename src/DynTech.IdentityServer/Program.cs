@@ -13,7 +13,7 @@ namespace DynTech.IdentityServer
     /// <summary>
     /// Program.
     /// </summary>
-    public class Program
+    public static class Program
     {
         /// <summary>
         /// The entry point of the program, where the program control starts and ends.

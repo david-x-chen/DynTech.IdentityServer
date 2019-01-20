@@ -4,9 +4,9 @@
 
 namespace IdentityServer4.MongoDB
 {
-    public class Constants
+    public static class Constants
     {
-        public class TableNames
+        public static class TableNames
         {
             // Configuration
             public const string IdentityResource = "IdentityResources";

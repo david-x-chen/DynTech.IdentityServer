@@ -54,7 +54,7 @@ namespace IdentityServer4.MongoDB.Stores
 
             var apis =
                 from api in _context.ApiResources
-                where api.Scopes.Where(x => names.Contains(x.Name)).Any()
+                where api.Scopes.Any(x => names.Contains(x.Name))
                 select api;
 
             var results = apis.ToArray();
@@ -78,7 +78,7 @@ namespace IdentityServer4.MongoDB.Stores
 
             _logger.LogDebug("Found {scopes} identity scopes in database", results.Select(x => x.Name));
 
-            return Task.FromResult(results.Select(x => x.ToModel()).ToArray().AsEnumerable());
+            return Task.FromResult(results.Select(x => x.ToModel()));
         }
 
         public Task<Resources> GetAllResourcesAsync()
@@ -88,8 +88,8 @@ namespace IdentityServer4.MongoDB.Stores
             var apis = _context.ApiResources;
 
             var result = new Resources(
-                identity.ToArray().Select(x => x.ToModel()).AsEnumerable(),
-                apis.ToArray().Select(x => x.ToModel()).AsEnumerable());
+                identity.AsEnumerable().Select(x => x.ToModel()),
+                apis.AsEnumerable().Select(x => x.ToModel()));
 
             _logger.LogDebug("Found {scopes} as all scopes in database", result.IdentityResources.Select(x => x.Name).Union(result.ApiResources.SelectMany(x => x.Scopes).Select(x => x.Name)));
 

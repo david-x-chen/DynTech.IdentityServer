@@ -25,24 +25,24 @@ namespace IdentityServer4.MongoDB.Stores
             _logger = logger;
         }
 
-        public Task StoreAsync(PersistedGrant token)
+        public Task StoreAsync(PersistedGrant grant)
         {
             try
             {
-                var existing = _context.PersistedGrants.SingleOrDefault(x => x.Key == token.Key);
+                var existing = _context.PersistedGrants.SingleOrDefault(x => x.Key == grant.Key);
                 if (existing == null)
                 {
-                    _logger.LogDebug("{persistedGrantKey} not found in database", token.Key);
+                    _logger.LogDebug("{persistedGrantKey} not found in database", grant.Key);
 
-                    var persistedGrant = token.ToEntity();
+                    var persistedGrant = grant.ToEntity();
                     _context.Add(persistedGrant);
                 }
                 else
                 {
-                    _logger.LogDebug("{persistedGrantKey} found in database", token.Key);
+                    _logger.LogDebug("{persistedGrantKey} found in database", grant.Key);
 
-                    token.UpdateEntity(existing);
-                    _context.Update(x => x.Key == token.Key, existing);
+                    grant.UpdateEntity(existing);
+                    _context.Update(x => x.Key == grant.Key, existing);
                 }
             }
             catch (Exception ex)
