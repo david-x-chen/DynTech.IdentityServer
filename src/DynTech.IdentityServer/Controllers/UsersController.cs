@@ -82,6 +82,8 @@ namespace DynTech.IdentityServer.Controllers
         /// <param name="user">User.</param>
         private async Task<List<string>> GetClients(ApplicationUser user)
         {
+            _logger.LogInformation($"Load clients of {user.UserName}.");
+
             var results = new List<string>();
             if (user.Clients != null)
             {

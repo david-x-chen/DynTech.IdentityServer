@@ -5,7 +5,7 @@ namespace DynTech.IdentityServer.Configuration
 {
     /// <summary>
     /// </summary>
-    public class Resources
+    public static class Resources
     {
         /// <summary>
         /// </summary>

@@ -10,6 +10,8 @@ using IdentityServer4.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace DynTech.IdentityServer.Controllers
 {
@@ -19,6 +21,7 @@ namespace DynTech.IdentityServer.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        private readonly ILogger<HomeController> _logger;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -27,9 +30,11 @@ namespace DynTech.IdentityServer.Controllers
         /// </summary>
         /// <param name="interaction">Interaction.</param>
         /// <param name="httpContextAccessor">Http context accessor.</param>
-        public HomeController(IIdentityServerInteractionService interaction,
+        public HomeController(ILogger<HomeController> logger,
+            IIdentityServerInteractionService interaction,
             IHttpContextAccessor httpContextAccessor)
         {
+            _logger = logger;
             _interaction = interaction;
             _httpContextAccessor = httpContextAccessor;
         }
@@ -90,11 +95,13 @@ namespace DynTech.IdentityServer.Controllers
                 var errorState = TempData["ModelState"] as List<string>;
                 if (errorState != null)
                 {
+                    StringBuilder strbuilder = new StringBuilder();
                     foreach (var err in errorState)
                     {
-                        System.Console.WriteLine(err);
-                        errMsg.Error += err;
+                        _logger.LogError(err);
+                        strbuilder.Append(err);
                     }
+                    errMsg.Error = strbuilder.ToString();
                 }
             }
 

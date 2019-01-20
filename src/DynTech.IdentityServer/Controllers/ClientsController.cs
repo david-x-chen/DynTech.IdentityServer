@@ -24,23 +24,19 @@ namespace DynTech.IdentityServer.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfigurationDbContext _context;
         private readonly IClientStore _clients;
-        private readonly ILogger _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Controllers.ClientsController"/> class.
         /// </summary>
         /// <param name="clients">Clients.</param>
         /// <param name="context">Context.</param>
-        /// <param name="logger">Logger.</param>
         /// <param name="userManager">user Manager.</param>
         public ClientsController(IClientStore clients,
                                  IConfigurationDbContext context,
-                                 ILogger<ClientsController> logger,
                                  UserManager<ApplicationUser> userManager)
         {
             _clients = clients;
             _context = context;
-            _logger = logger;
             _userManager = userManager;
         }
 
@@ -54,7 +50,8 @@ namespace DynTech.IdentityServer.Controllers
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
             if (currentUser != null && currentUser.Clients != null)
             {
-                clientList = _context.Clients.Where(c => currentUser.Clients.Contains(c.ClientId)).ToList()
+                clientList = _context.Clients.Where(c => currentUser.Clients.Contains(c.ClientId))
+                                     .AsEnumerable()
                                      .Select(cm =>
                                       {
                                           var client = new ClientViewModel

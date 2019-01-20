@@ -43,14 +43,6 @@ namespace DynTech.IdentityServer.Data.Seeding
         /// <param name="context">Context.</param>
         private async Task EnsureSeedData(IConfigurationDbContext context)
         {
-            //if (!context.Clients.Any())
-            //{
-            //    foreach (var client in Clients.Get().ToList())
-            //    {
-            //        context.AddClient(client.ToEntity());
-            //    }
-            //}
-
             if (!context.IdentityResources.Any())
             {
                 await context.AddIdentityResource((new IdentityResources.OpenId()).ToEntity());

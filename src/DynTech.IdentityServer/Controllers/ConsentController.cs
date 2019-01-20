@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using DynTech.IdentityServer.Models.Consent;
 using DynTech.IdentityServer.Services;
+using Newtonsoft.Json;
 
 namespace DynTech.IdentityServer.Controllers
 {
@@ -58,6 +59,8 @@ namespace DynTech.IdentityServer.Controllers
         public async Task<IActionResult> Index(ConsentInputModel model)
         {
             var result = await _consent.ProcessConsent(model);
+
+            _logger.LogInformation(JsonConvert.SerializeObject(result));
 
             if (result.IsRedirect)
             {

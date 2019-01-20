@@ -49,6 +49,8 @@ namespace DynTech.IdentityServer.Controllers
 
         public async Task<IActionResult> ApiResList()
         {
+            _logger.LogInformation("Load api resources...");
+
             var resList = _context.ApiResources.ToList()
                                      .Select(rm => {
                                           return new IdentityResourceViewModel

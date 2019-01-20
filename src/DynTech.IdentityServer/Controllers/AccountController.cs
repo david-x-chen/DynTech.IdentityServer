@@ -335,7 +335,7 @@ namespace DynTech.IdentityServer.Controllers
             // build a model so the logout page knows what to display
             var vm = await _account.BuildLogoutViewModelAsync(logoutId);
 
-            if (vm.ShowLogoutPrompt == false)
+            if (!vm.ShowLogoutPrompt)
             {
                 // if the request for logout was properly authenticated from IdentityServer, then
                 // we don't need to show the prompt and can just log the user out directly.
@@ -452,7 +452,7 @@ namespace DynTech.IdentityServer.Controllers
                 var info = await _signInManager.GetExternalLoginInfoAsync();
                 if (info == null)
                 {
-                    throw new ArgumentNullException("Error loading external login information during confirmation.");
+                    throw new ArgumentException($"Error loading external login information during confirmation.", "model");
                 }
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user);
@@ -561,7 +561,7 @@ namespace DynTech.IdentityServer.Controllers
         {
             if (code == null)
             {
-                throw new ArgumentNullException("A code must be supplied for password reset.");
+                throw new ArgumentNullException("A code must be supplied for password reset.", nameof(code));
             }
             var model = new ResetPasswordViewModel { Code = code };
             return View(model);

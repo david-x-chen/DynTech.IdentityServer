@@ -3,7 +3,7 @@ namespace DynTech.IdentityServer.Data
     /// <summary>
     /// Custom claim types.
     /// </summary>
-    public class CustomClaimTypes
+    public static class CustomClaimTypes
     {
         /// <summary>
         /// Gets the permission.
