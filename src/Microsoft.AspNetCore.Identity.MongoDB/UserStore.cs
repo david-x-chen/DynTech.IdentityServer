@@ -44,9 +44,6 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 
         public async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken)
 		{
-            var hasher = new PasswordHasher<TUser>();
-            user.PasswordHash = hasher.HashPassword(user, user.PasswordHash);
-
             await _Users.InsertOneAsync(user, cancellationToken: cancellationToken);
 			return IdentityResult.Success;
 		}
@@ -106,7 +103,7 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 		public async Task<bool> HasPasswordAsync(TUser user, CancellationToken cancellationToken)
         {
             var builder = new FilterDefinitionBuilder<TUser>();
-            var filter = builder.Eq(u => u.NormalizedEmail, user.NormalizedEmail);
+            var filter = builder.Eq(u => u.UserName, user.UserName);
             var userInfo = await _Users.FindAsync(filter);
             var existingUser = userInfo.FirstOrDefault();
 
@@ -177,8 +174,9 @@ namespace Microsoft.AspNetCore.Identity.MongoDB
 		public Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
 		{
 			// note: I don't like that this now searches on normalized email :(... why not FindByNormalizedEmailAsync then?
-			// todo low - what if a user can have multiple accounts with the same email?
-			return _Users.Find(u => u.NormalizedEmail == normalizedEmail).FirstOrDefaultAsync(cancellationToken);
+			// what if a user can have multiple accounts with the same email?
+			// The account is created with email. It should be able to create another account with same email.
+			return _Users.Find(u => u.NormalizedEmail == normalizedEmail || u.Email == normalizedEmail).FirstOrDefaultAsync(cancellationToken);
 		}
 
 		public async Task<IList<Claim>> GetClaimsAsync(TUser user, CancellationToken cancellationToken)

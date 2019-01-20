@@ -15,7 +15,7 @@
 		[Test]
 		public async Task HasPassword_NoPassword_ReturnsFalse()
 		{
-			var user = new IdentityUser {UserName = "bob"};
+			var user = new IdentityUser {UserName = "bob_no_pwd"};
 			var manager = GetUserManager();
 			await manager.CreateAsync(user);
 
@@ -52,12 +52,14 @@
 			var user = new IdentityUser {UserName = "bob"};
 			var manager = GetUserManager();
 			await manager.CreateAsync(user);
+
+			user = await manager.FindByNameAsync(user.UserName);
 			await manager.AddPasswordAsync(user, "testtest");
 
 			await manager.RemovePasswordAsync(user);
 
 			var builder = Builders<IdentityUser>.Filter;
-			var filter = builder.Empty;
+			var filter = builder.Eq(u => u.UserName, user.UserName);
 
 			var savedUser = Users.FindAsync(filter).Result.Single();
 			Expect(savedUser.PasswordHash, Is.Null);

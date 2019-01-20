@@ -37,15 +37,21 @@
 			var login = new UserLoginInfo("provider", "key", "name");
 			var user = new IdentityUser {UserName = "bob"};
 			await manager.CreateAsync(user);
+
+			user = await manager.FindByNameAsync(user.UserName);
 			await manager.AddLoginAsync(user, login);
 
 			await manager.RemoveLoginAsync(user, login.LoginProvider, login.ProviderKey);
+			await manager.UpdateAsync(user);
 
 			var builder = Builders<IdentityUser>.Filter;
 			var filter = builder.Empty;
 
 			var savedUser = Users.FindAsync(filter).Result.Single();
 			Expect(savedUser.Logins, Is.Empty);
+
+			await manager.DeleteAsync(user);
+			Expect(await manager.FindByNameAsync(user.UserName), Is.Null);
 		}
 
 		[Test]
@@ -55,6 +61,8 @@
 			var login = new UserLoginInfo("provider", "key", "name");
 			var user = new IdentityUser {UserName = "bob"};
 			await manager.CreateAsync(user);
+			
+			user = await manager.FindByNameAsync(user.UserName);
 			await manager.AddLoginAsync(user, login);
 
 			var logins = await manager.GetLoginsAsync(user);
@@ -63,6 +71,9 @@
 			Expect(savedLogin.LoginProvider, Is.EqualTo("provider"));
 			Expect(savedLogin.ProviderKey, Is.EqualTo("key"));
 			Expect(savedLogin.ProviderDisplayName, Is.EqualTo("name"));
+
+			await manager.DeleteAsync(user);
+			Expect(await manager.FindByNameAsync(user.UserName), Is.Null);
 		}
 
 		[Test]

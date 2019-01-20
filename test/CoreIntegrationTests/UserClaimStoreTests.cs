@@ -96,7 +96,8 @@
 		{
 			var userWithClaim = new IdentityUser
 			{
-				UserName = "with"
+				UserName = "with",
+				
 			};
 			var userWithout = new IdentityUser();
 			var manager = GetUserManager();

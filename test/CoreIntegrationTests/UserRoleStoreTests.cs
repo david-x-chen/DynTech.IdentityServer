@@ -46,12 +46,13 @@
 			var manager = GetUserManager();
 			var user = new IdentityUser {UserName = "bob"};
 			await manager.CreateAsync(user);
-			await manager.AddToRoleAsync(user, "role");
 
+			user = await manager.FindByNameAsync(user.UserName);
+			await manager.AddToRoleAsync(user, "role");
 			await manager.RemoveFromRoleAsync(user, "role");
 
 			var builder = Builders<IdentityUser>.Filter;
-			var filter = builder.Empty;
+			var filter = builder.Eq(u => u.UserName, user.UserName);
 
 			var savedUser = Users.FindAsync(filter).Result.Single();
 			Expect(savedUser.Roles, Is.Empty);
@@ -63,8 +64,8 @@
 		{
 			var roleA = "roleA";
 			var roleB = "roleB";
-			var userInA = new IdentityUser {UserName = "nameA"};
-			var userInB = new IdentityUser {UserName = "nameB"};
+			var userInA = new IdentityUser {UserName = "nameA", PasswordHash = "pwdA"};
+			var userInB = new IdentityUser {UserName = "nameB", PasswordHash = "pwdB"};
 			var manager = GetUserManager();
 			await manager.CreateAsync(userInA);
 			await manager.CreateAsync(userInB);

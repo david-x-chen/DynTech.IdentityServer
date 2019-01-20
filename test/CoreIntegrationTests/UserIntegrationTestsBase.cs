@@ -1,16 +1,21 @@
 ﻿namespace IntegrationTests
 {
 	using System;
-	using Microsoft.AspNetCore.Builder;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Builder;
 	using Microsoft.AspNetCore.Identity;
 	using Microsoft.AspNetCore.Identity.MongoDB;
 	using Microsoft.Extensions.DependencyInjection;
-	using MongoDB.Driver;
-	using NUnit.Framework;
+    using Mongo2Go;
+    using MongoDB.Driver;
+    using Moq;
+    using NUnit.Framework;
 
-    [TestFixture]
-	public class UserIntegrationTestsBase
+	[SetUpFixture]
+	public class UserIntegrationTestsBase: AssertionHelper
 	{
+    	internal static MongoDbRunner _runner;
 		protected IMongoDatabase Database;
 		protected IMongoCollection<IdentityUser> Users;
 		protected IMongoCollection<IdentityRole> Roles;
@@ -23,12 +28,17 @@
 
         public UserIntegrationTestsBase()
         {
+			_runner = MongoDbRunner.Start(singleNodeReplSet: false);
+			_TestingConnectionString = _runner.ConnectionString + IdentityTesting;
+
         }
 
-        [SetUp]
+        [OneTimeSetUp]
 		public void BeforeEachTest()
 		{
-			var client = new MongoClient(_TestingConnectionString);
+			Console.WriteLine($"in memory connection: {_runner.ConnectionString}");
+
+			var client = new MongoClient(_runner.ConnectionString);
 
 			// todo move away from GetServer which could be deprecated at some point
 			Database = client.GetDatabase(IdentityTesting);
@@ -41,6 +51,12 @@
 			Database.DropCollection("roles");
 
 			ServiceProvider = CreateServiceProvider<IdentityUser, IdentityRole>();
+		}
+
+		[OneTimeTearDown]
+		public void AfterTest()
+		{
+
 		}
 
 		protected UserManager<IdentityUser> GetUserManager()
@@ -62,6 +78,27 @@
 			services.AddLogging();
 
 			return services.BuildServiceProvider();
+		}
+	}
+
+	public static class TaskExtensions
+	{
+		public static async Task WithTimeout(this Task task, TimeSpan timeout)
+		{
+			using (var cancellationTokenSource = new CancellationTokenSource())
+			{
+
+				var completedTask = await Task.WhenAny(task, Task.Delay(timeout, cancellationTokenSource.Token));
+				if (completedTask == task)
+				{
+					cancellationTokenSource.Cancel();
+					await task;
+				}
+				else
+				{
+					throw new TimeoutException("The operation has timed out.");
+				}
+			}
 		}
 	}
 }

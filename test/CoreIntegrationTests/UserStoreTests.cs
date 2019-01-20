@@ -55,7 +55,7 @@
 		public async Task FindById_SavedUser_ReturnsUser()
 		{
 			var userId = ObjectId.GenerateNewId().ToString();
-			var user = new IdentityUser {UserName = "name"};
+			var user = new IdentityUser {UserName = "name_with_new_id"};
 			user.Id = userId;
 			var manager = GetUserManager();
 			await manager.CreateAsync(user);
@@ -89,12 +89,12 @@
 		[Test]
 		public async Task Delete_ExistingUser_Removes()
 		{
-			var user = new IdentityUser {UserName = "name"};
+			var user = new IdentityUser {UserName = "name_for_existing_then_remove"};
 			var manager = GetUserManager();
 			await manager.CreateAsync(user);
 
 			var builder = Builders<IdentityUser>.Filter;
-			var filter = builder.Empty;
+			var filter = builder.Eq(u => u.UserName, user.UserName);
 
 			Expect(Users.FindAsync(filter).Result.ToList(), Is.Not.Empty);
 
@@ -109,13 +109,14 @@
 			var user = new IdentityUser {UserName = "name"};
 			var manager = GetUserManager();
 			await manager.CreateAsync(user);
-			var savedUser = await manager.FindByIdAsync(user.Id);
+			//var savedUser = await manager.FindByIdAsync(user.Id);
+			var savedUser = await manager.FindByNameAsync(user.UserName);
 			savedUser.UserName = "newname";
 
 			await manager.UpdateAsync(savedUser);
 
 			var builder = Builders<IdentityUser>.Filter;
-			var filter = builder.Empty;
+			var filter = builder.Eq(u => u.UserName, savedUser.UserName);
 
 			var changedUser = Users.FindAsync(filter).Result.Single();
 			Expect(changedUser, Is.Not.Null);
@@ -127,7 +128,8 @@
 		{
 			var user = new IdentityUser
 			{
-				UserName = "username"
+				UserName = "username",
+				
 			};
 			var manager = GetUserManager();
 			await manager.CreateAsync(user);

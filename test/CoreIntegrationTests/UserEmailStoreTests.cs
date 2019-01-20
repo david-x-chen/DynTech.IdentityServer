@@ -2,7 +2,8 @@
 {
 	using System.Threading.Tasks;
 	using Microsoft.AspNetCore.Identity.MongoDB;
-	using NUnit.Framework;
+    using MongoDB.Bson;
+    using NUnit.Framework;
 
 	[TestFixture]
 	public class UserEmailStoreTests : UserIntegrationTestsBase
@@ -39,7 +40,9 @@
 			await manager.CreateAsync(user);
 			Expect(await manager.FindByEmailAsync("email"), Is.Null);
 
+			user = await manager.FindByNameAsync(user.UserName);
 			await manager.SetEmailAsync(user, "email");
+			await manager.UpdateAsync(user);
 
 			Expect(await manager.FindByEmailAsync("email"), Is.Not.Null);
 		}

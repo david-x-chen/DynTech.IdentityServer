@@ -25,6 +25,9 @@
 			var savedRole = Roles.FindAsync(filter).Result.Single();
 			Expect(savedRole.Name, Is.EqualTo(roleName));
 			Expect(savedRole.NormalizedName, Is.EqualTo("ADMIN"));
+
+			await manager.DeleteAsync(savedRole);
+			Expect(Roles.FindAsync(filter).Result.ToList(), Is.Empty);
 		}
 
 		[Test]
@@ -79,7 +82,8 @@
 			var role = new IdentityRole {Name = "name"};
 			var manager = GetRoleManager();
 			await manager.CreateAsync(role);
-			var savedRole = await manager.FindByIdAsync(role.Id);
+			//var savedRole = await manager.FindByIdAsync(role.Id);
+			var savedRole = await manager.FindByNameAsync(role.Name);
 			savedRole.Name = "newname";
 
 			await manager.UpdateAsync(savedRole);
