@@ -39,7 +39,7 @@ namespace DynTech.IdentityServer.Models.AccountViewModels
         /// <see cref="T:DynTech.IdentityServer.Models.AccountViewModels.LoginViewModel"/> is external login only.
         /// </summary>
         /// <value><c>true</c> if is external login only; otherwise, <c>false</c>.</value>
-        public bool IsExternalLoginOnly => EnableLocalLogin == false && ExternalProviders?.Count() == 1;
+        public bool IsExternalLoginOnly => !EnableLocalLogin && ExternalProviders?.Count() == 1;
 
         /// <summary>
         /// Gets the external login scheme.

@@ -561,7 +561,7 @@ namespace DynTech.IdentityServer.Controllers
         {
             if (code == null)
             {
-                throw new ArgumentNullException("A code must be supplied for password reset.", nameof(code));
+                throw new ArgumentNullException("A code must be supplied for password reset.", "code");
             }
             var model = new ResetPasswordViewModel { Code = code };
             return View(model);

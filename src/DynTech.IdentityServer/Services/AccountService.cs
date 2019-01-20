@@ -16,10 +16,8 @@ namespace DynTech.IdentityServer.Services
     /// </summary>
     public class AccountService: IAccountService
     {
-        private readonly IClientStore _clientStore;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IAuthenticationSchemeProvider _schemeProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:DynTech.IdentityServer.Services.AccountService"/> class.
@@ -30,14 +28,10 @@ namespace DynTech.IdentityServer.Services
         /// <param name="clientStore">Client store.</param>
         public AccountService(
             IIdentityServerInteractionService interaction,
-            IHttpContextAccessor httpContextAccessor,
-            IAuthenticationSchemeProvider schemeProvider,
-            IClientStore clientStore)
+            IHttpContextAccessor httpContextAccessor)
         {
             _interaction = interaction;
             _httpContextAccessor = httpContextAccessor;
-            _schemeProvider = schemeProvider;
-            _clientStore = clientStore;
         }
 
         /// <summary>

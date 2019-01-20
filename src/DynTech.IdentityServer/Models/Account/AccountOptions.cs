@@ -3,7 +3,7 @@ namespace DynTech.IdentityServer.Models.Account
     /// <summary>
     /// Account options.
     /// </summary>
-    public class AccountOptions
+    public static class AccountOptions
     {
         /// <summary>
         /// The show logout prompt.

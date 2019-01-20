@@ -124,7 +124,7 @@ namespace DynTech.IdentityServer.Services
                     var resources = await _resourceStore.FindEnabledResourcesByScopeAsync(request.ScopesRequested);
                     if (resources != null && (resources.IdentityResources.Any() || resources.ApiResources.Any()))
                     {
-                        return CreateConsentViewModel(model, returnUrl, request, client, resources);
+                        return CreateConsentViewModel(model, returnUrl, client, resources);
                     }
                     else
                     {
@@ -145,8 +145,7 @@ namespace DynTech.IdentityServer.Services
         }
 
         private ConsentViewModel CreateConsentViewModel(
-            ConsentInputModel model, string returnUrl, 
-            AuthorizationRequest request, 
+            ConsentInputModel model, string returnUrl,
             Client client, Resources resources)
         {
             var vm = new ConsentViewModel();
