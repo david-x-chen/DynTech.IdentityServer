@@ -14,9 +14,9 @@ namespace IdentityServer4.MongoDB.DbContexts
 {
     public class ConfigurationDbContext : MongoDBContextBase, IConfigurationDbContext
     {
-        private IMongoCollection<Client> _clients;
-        private IMongoCollection<IdentityResource> _identityResources;
-        private IMongoCollection<ApiResource> _apiResources;
+        private readonly IMongoCollection<Client> _clients;
+        private readonly IMongoCollection<IdentityResource> _identityResources;
+        private readonly IMongoCollection<ApiResource> _apiResources;
 
         public ConfigurationDbContext(IOptions<MongoDBConfiguration> settings)
             : base(settings)

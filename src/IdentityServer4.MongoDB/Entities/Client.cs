@@ -45,7 +45,7 @@ namespace IdentityServer4.MongoDB.Entities
         public int RefreshTokenUsage { get; set; } = (int)TokenUsage.OneTimeOnly;
         public bool UpdateAccessTokenClaimsOnRefresh { get; set; }
         public int RefreshTokenExpiration { get; set; } = (int)TokenExpiration.Absolute;
-        public int AccessTokenType { get; set; } = 0; //Jwt;
+        public int AccessTokenType { get; set; } = 0; //Jwt
         public bool EnableLocalLogin { get; set; } = true;
         public List<ClientIdPRestriction> IdentityProviderRestrictions { get; set; }
         public bool IncludeJwtId { get; set; }
