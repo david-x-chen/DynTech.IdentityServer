@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <ProjectGuid>{{3F211EF2-7260-4DAB-9B97-0846CA5EB595}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>

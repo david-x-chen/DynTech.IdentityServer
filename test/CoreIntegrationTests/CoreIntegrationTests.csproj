@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <ProjectGuid>{E27804DD-75D5-4008-A8F0-B3A1CA6AE321}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../CoreTests/CoreTests.csproj" />
