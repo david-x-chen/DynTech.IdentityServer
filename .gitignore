@@ -195,4 +195,10 @@ ModelManifest.xml
 .vscode/
 logs/
 .sonarqube/
-coverage.opencover.xml
+*.opencover.xml
+
+tools/Cake
+tools/nuget.exe
+tools/Addins
+tools/MSBuild.SonarQube.Runner.Tool.*
+tools/packages.config.md5sum
