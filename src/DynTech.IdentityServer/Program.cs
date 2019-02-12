@@ -43,6 +43,12 @@ namespace DynTech.IdentityServer
 
                 var filter = new MetricsFilter().WhereType(MetricType.Timer);
 
+                Log.Information(Environment.GetEnvironmentVariable("INFLUXDB_BASEURI"));
+                Log.Information(Environment.GetEnvironmentVariable("INFLUXDB_DATABASE"));
+                Log.Information(Environment.GetEnvironmentVariable("INFLUXDB_CONSISTENCY"));
+                Log.Information(Environment.GetEnvironmentVariable("INFLUXDB_USERNAME"));
+                Log.Information(Environment.GetEnvironmentVariable("INFLUXDB_PASSWORD"));
+
                 var host = new WebHostBuilder()
                     .UseKestrel()
                     .ConfigureMetricsWithDefaults(builder =>
