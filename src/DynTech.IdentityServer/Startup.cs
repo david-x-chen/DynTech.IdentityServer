@@ -9,7 +9,6 @@ using IdentityServer4.MongoDB.Interfaces;
 using Serilog;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Threading.Tasks;
-using App.Metrics.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DynTech.IdentityServer
@@ -44,8 +43,11 @@ namespace DynTech.IdentityServer
 
             services.AddExternalIdentityProviders(Configuration);
 
-            services.AddMvc().AddMetrics()
-                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services.AddMvc()
+                    .AddMetrics()
+                    .SetCompatibilityVersion(CompatibilityVersion.Latest);
+
+            services.AddMetricsTrackingMiddleware();
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
 
@@ -78,6 +80,17 @@ namespace DynTech.IdentityServer
             {
                 app.UseExceptionHandler(Configuration["AppURLs:ErrorPage"]);
             }
+
+            // To add all available tracking middleware
+            app.UseMetricsAllMiddleware();
+
+            // Or to cherry-pick the tracking of interest
+            // app.UseMetricsActiveRequestMiddleware();
+            // app.UseMetricsErrorTrackingMiddleware();
+            // app.UseMetricsPostAndPutSizeTrackingMiddleware();
+            // app.UseMetricsRequestTrackingMiddleware();
+            // app.UseMetricsOAuth2TrackingMiddleware();
+            // app.UseMetricsApdexTrackingMiddleware();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
