@@ -84,14 +84,6 @@ namespace DynTech.IdentityServer
             // To add all available tracking middleware
             app.UseMetricsAllMiddleware();
 
-            // Or to cherry-pick the tracking of interest
-            // app.UseMetricsActiveRequestMiddleware();
-            // app.UseMetricsErrorTrackingMiddleware();
-            // app.UseMetricsPostAndPutSizeTrackingMiddleware();
-            // app.UseMetricsRequestTrackingMiddleware();
-            // app.UseMetricsOAuth2TrackingMiddleware();
-            // app.UseMetricsApdexTrackingMiddleware();
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
