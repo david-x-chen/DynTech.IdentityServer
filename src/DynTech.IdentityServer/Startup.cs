@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +12,8 @@ using Serilog;
 using Microsoft.AspNetCore.HttpOverrides;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
+using System;
 
 namespace DynTech.IdentityServer
 {
@@ -39,6 +43,11 @@ namespace DynTech.IdentityServer
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            var envVar = Environment.GetEnvironmentVariables();
+            var redis = ConnectionMultiplexer.Connect(envVar["REDIS_URI"].ToString());
+            services.AddDataProtection()
+                    .PersistKeysToStackExchangeRedis(redis, "dyn_idsr_key");
+
             services.AddIdentityServerWithMongoDB(Configuration);
 
             services.AddExternalIdentityProviders(Configuration);
@@ -74,7 +83,6 @@ namespace DynTech.IdentityServer
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-                app.UseBrowserLink();
             }
             else
             {
